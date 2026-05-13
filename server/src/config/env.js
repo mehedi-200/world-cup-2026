@@ -11,7 +11,7 @@ module.exports = {
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'worldcup2026',
-    socketPath: process.env.DB_SOCKET || '/opt/lampp/var/mysql/mysql.sock',
+    socketPath: process.env.DB_SOCKET || undefined,
   },
   jwt: {
     secret: process.env.JWT_SECRET,

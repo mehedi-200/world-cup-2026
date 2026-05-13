@@ -33,9 +33,11 @@ CREATE TABLE IF NOT EXISTS `groups` (
 -- -----------------------------------------
 CREATE TABLE IF NOT EXISTS teams (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    external_id INT NULL,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(3) UNIQUE NOT NULL,
     flag_url VARCHAR(255) NULL,
+    crest_url VARCHAR(500) NULL,
     group_id INT,
     played INT DEFAULT 0,
     won INT DEFAULT 0,
@@ -46,6 +48,7 @@ CREATE TABLE IF NOT EXISTS teams (
     goal_difference INT DEFAULT 0,
     points INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE INDEX idx_external_id (external_id),
     FOREIGN KEY (group_id) REFERENCES `groups`(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -54,19 +57,26 @@ CREATE TABLE IF NOT EXISTS teams (
 -- -----------------------------------------
 CREATE TABLE IF NOT EXISTS matches (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    external_id INT NULL,
     home_team_id INT,
     away_team_id INT,
     group_id INT NULL,
     stage ENUM('group', 'round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'third_place', 'final') NOT NULL,
     match_date DATETIME NOT NULL,
-    venue VARCHAR(255) NOT NULL,
-    city VARCHAR(100) NOT NULL,
+    venue VARCHAR(255) NULL,
+    city VARCHAR(100) NULL,
     home_score INT NULL,
     away_score INT NULL,
     status ENUM('scheduled', 'live', 'half_time', 'completed', 'postponed') DEFAULT 'scheduled',
     minute INT NULL,
+    competition_name VARCHAR(255) NULL,
+    competition_code VARCHAR(20) NULL,
+    competition_emblem VARCHAR(500) NULL,
+    home_team_crest VARCHAR(500) NULL,
+    away_team_crest VARCHAR(500) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE INDEX idx_match_external_id (external_id),
     FOREIGN KEY (home_team_id) REFERENCES teams(id),
     FOREIGN KEY (away_team_id) REFERENCES teams(id),
     FOREIGN KEY (group_id) REFERENCES `groups`(id)

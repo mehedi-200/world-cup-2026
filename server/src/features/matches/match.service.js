@@ -145,12 +145,12 @@ const update = async (id, data) => {
 const addEvent = async (matchId, data) => {
   await getById(matchId);
 
-  const { event_type, minute, player_name, team_id, detail } = data;
+  const { event_type, minute, player_name, team_id, details } = data;
 
   const [result] = await db.query(
-    `INSERT INTO match_events (match_id, event_type, minute, player_name, team_id, detail)
+    `INSERT INTO match_events (match_id, event_type, minute, player_name, team_id, details)
      VALUES (?, ?, ?, ?, ?, ?)`,
-    [matchId, event_type, minute, player_name, team_id, detail || null]
+    [matchId, event_type, minute, player_name, team_id, details || null]
   );
 
   const [rows] = await db.query(

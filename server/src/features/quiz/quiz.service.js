@@ -59,31 +59,50 @@ const submitAttempt = async (userId, quizId, answers) => {
   }
 
   const [questions] = await db.query(
-    'SELECT id, correct_answer FROM quiz_questions WHERE quiz_id = ?',
+    'SELECT id, correct_option, points FROM quiz_questions WHERE quiz_id = ?',
     [quizId]
   );
 
   const correctMap = {};
+  const pointsMap = {};
   for (const q of questions) {
-    correctMap[q.id] = q.correct_answer;
+    correctMap[q.id] = q.correct_option;
+    pointsMap[q.id] = q.points || 10;
   }
 
-  let score = 0;
+  let correctCount = 0;
+  let totalPoints = 0;
+  const responses = [];
+
   for (const answer of answers) {
-    if (correctMap[answer.question_id] && correctMap[answer.question_id] === answer.selected_option) {
-      score++;
+    const isCorrect = correctMap[answer.question_id] && correctMap[answer.question_id] === answer.selected_option;
+    if (isCorrect) {
+      correctCount++;
+      totalPoints += pointsMap[answer.question_id] || 10;
     }
+    responses.push({
+      question_id: answer.question_id,
+      selected_option: answer.selected_option,
+      is_correct: !!isCorrect,
+    });
   }
 
   const totalQuestions = questions.length;
-  const pointsPerQuestion = quizzes[0].points_per_question || 1;
-  const totalPoints = score * pointsPerQuestion;
 
   const [result] = await db.query(
-    `INSERT INTO quiz_attempts (user_id, quiz_id, score, total_questions, points_earned)
-     VALUES (?, ?, ?, ?, ?)`,
-    [userId, quizId, score, totalQuestions, totalPoints]
+    `INSERT INTO quiz_attempts (user_id, quiz_id, score, total_questions)
+     VALUES (?, ?, ?, ?)`,
+    [userId, quizId, correctCount, totalQuestions]
   );
+
+  // Save individual responses
+  for (const resp of responses) {
+    await db.query(
+      `INSERT INTO quiz_responses (attempt_id, question_id, selected_option, is_correct)
+       VALUES (?, ?, ?, ?)`,
+      [result.insertId, resp.question_id, resp.selected_option, resp.is_correct]
+    );
+  }
 
   await db.query(
     'UPDATE users SET total_points = total_points + ? WHERE id = ?',
@@ -93,7 +112,7 @@ const submitAttempt = async (userId, quizId, answers) => {
   return {
     id: result.insertId,
     quiz_id: quizId,
-    score,
+    score: correctCount,
     total_questions: totalQuestions,
     points_earned: totalPoints,
   };

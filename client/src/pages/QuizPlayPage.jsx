@@ -22,7 +22,7 @@ function QuizPlayContent() {
 
   const handleComplete = async (answers) => {
     const res = await quizService.submitAttempt(id, { answers });
-    setResult(res.data.data);
+    setResult(res.data.data?.attempt || res.data.data);
   };
 
   if (loading) return <Loader size="lg" text="Loading quiz..." />;
@@ -33,7 +33,7 @@ function QuizPlayContent() {
         <QuizResult
           score={result.score}
           totalQuestions={result.total_questions}
-          totalPoints={result.score}
+          totalPoints={result.points_earned}
         />
         <div className="flex justify-center gap-4 mt-6">
           <Button variant="secondary" onClick={() => navigate('/quizzes')}>

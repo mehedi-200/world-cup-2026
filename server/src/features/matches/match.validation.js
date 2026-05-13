@@ -32,7 +32,7 @@ const createEvent = [
     .withMessage('Valid match ID is required'),
   body('event_type')
     .trim()
-    .isIn(['goal', 'yellow_card', 'red_card', 'substitution', 'penalty', 'own_goal', 'var_review'])
+    .isIn(['goal', 'own_goal', 'penalty_goal', 'penalty_miss', 'yellow_card', 'red_card', 'substitution'])
     .withMessage('Valid event type is required'),
   body('minute')
     .isInt({ min: 0, max: 150 })
@@ -44,7 +44,7 @@ const createEvent = [
   body('team_id')
     .isInt({ min: 1 })
     .withMessage('Valid team ID is required'),
-  body('detail')
+  body('details')
     .optional()
     .trim(),
   validate,

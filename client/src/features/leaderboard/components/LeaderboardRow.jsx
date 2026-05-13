@@ -38,7 +38,7 @@ const LeaderboardRow = ({ rank, user, points, predictions_count }) => {
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
           <Avatar
-            src={user?.avatar}
+            src={user?.avatar_url}
             alt={user?.username}
             size="sm"
             fallback={user?.username || '?'}

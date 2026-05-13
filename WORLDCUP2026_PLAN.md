@@ -3,8 +3,8 @@
 > **Project:** WorldCup2026 — A production-grade football World Cup web application  
 > **Author:** Mehedi  
 > **Date:** 2026-05-12  
-> **Status:** Implementation Complete — 95%  
-> **Total Files Created:** 153 (excl. node_modules)
+> **Status:** Implementation Complete — 100%  
+> **Total Files Created:** 154 (excl. node_modules)
 
 ---
 
@@ -1398,7 +1398,7 @@ Server middleware verifies JWT on protected endpoints
 
 ## 16. Build Order & Milestones
 
-### Overall Progress: 95% Complete
+### Overall Progress: 100% Complete
 
 ### Phase 1 — Foundation ✅ DONE
 - [x] Initialize Vite + React + Tailwind (client) — 104 frontend files
@@ -1448,9 +1448,12 @@ Server middleware verifies JWT on protected endpoints
 - [x] SocketContext + useSocket hook
 - [x] LiveIndicator component with pulse animation
 - [x] Toast notifications (ToastContext + ToastProvider)
-- [ ] **PENDING**: Run schema.sql on XAMPP MySQL (needs `sudo /opt/lampp/lampp startmysql`)
-- [ ] **PENDING**: Verify full app build (`npm run dev` on both client + server)
-- [ ] **OPTIONAL**: Loading skeletons, additional responsive polish
+- [x] Database schema deployed with live API sync columns (external_id, crest_url, competition fields)
+- [x] Seed data loaded: 48 teams, 12 groups, 16 matches, events, quiz, polls
+- [x] Frontend builds cleanly (Vite production build verified)
+- [x] Backend starts and connects to MySQL successfully
+- [x] Live football-data.org API sync working (match.sync.js)
+- [x] Missing `calculatePoints.js` utility created
 
 ---
 
@@ -1488,10 +1491,15 @@ Server middleware verifies JWT on protected endpoints
 | **Frontend Core** | 10 | App.jsx, main.jsx, AppRoutes, api.js, contexts, hooks, utils |
 | **Config Files** | 8 | package.json (x2), vite.config, tailwind.config, postcss.config, .gitignore, nodemon.json, .env.example |
 
-### Remaining Steps (5%)
-1. Start XAMPP MySQL: `sudo /opt/lampp/lampp startmysql`
-2. Run schema: `/opt/lampp/bin/mysql -u root < server/database/schema.sql`
-3. Run seed: `/opt/lampp/bin/mysql -u root < server/database/seed.sql`
-4. Start backend: `cd server && npm run dev`
-5. Start frontend: `cd client && npm run dev`
-6. Open: http://localhost:5173
+### How to Run
+1. Ensure MySQL is running on port 3306
+2. Run schema: `mysql -u root -p < server/database/schema.sql`
+3. Run seed: `mysql -u root -p < server/database/seed.sql`
+4. Configure `server/.env` with your DB credentials
+5. Start backend: `cd server && npm run dev`
+6. Start frontend: `cd client && npm run dev`
+7. Open: http://localhost:5173
+
+### Default Credentials
+- **Admin:** admin@worldcup2026.com / password123
+- **User:** testuser@worldcup2026.com / password123

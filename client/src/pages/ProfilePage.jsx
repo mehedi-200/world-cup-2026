@@ -40,7 +40,7 @@ function ProfileContent() {
 
       {myRank && (
         <div className="mb-8">
-          <UserRankCard rank={myRank} />
+          <UserRankCard rank={myRank?.rank} user={myRank} />
         </div>
       )}
 
