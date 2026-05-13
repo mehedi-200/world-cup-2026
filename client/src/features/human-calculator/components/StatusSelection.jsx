@@ -15,7 +15,7 @@ export default function StatusSelection({ name, onSubmit }) {
   return (
     <div className="animate-fade-in min-h-screen flex flex-col">
       {/* Scrollable content */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-4 pt-6 pb-32">
+      <div className="flex-1 max-w-2xl mx-auto w-full px-4 pt-6 pb-40">
         <h2 className="text-lg md:text-xl font-bold text-center text-white mb-1">
           <span className="text-fifa-gold">{name}</span>, আপনার অবস্থা নির্বাচন করুন
         </h2>
@@ -49,9 +49,9 @@ export default function StatusSelection({ name, onSubmit }) {
         </div>
       </div>
 
-      {/* Fixed solid bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40">
-        <div className="bg-[#1a1a2e] border-t border-white/[0.06] px-4 py-3 safe-bottom">
+      {/* Fixed bottom bar — above mobile nav (50px) */}
+      <div className="fixed bottom-[50px] md:bottom-0 left-0 right-0 z-40">
+        <div className="bg-[#1a1a2e] border-t border-white/[0.06] px-4 py-3">
           <div className="max-w-2xl mx-auto">
             {selected.length > 0 && (
               <div className="flex items-center justify-center gap-1.5 mb-2">
