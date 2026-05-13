@@ -5,33 +5,61 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import votingService from '@/features/voting/services/votingService';
 import { useToast } from '@/hooks/useToast';
 
-/* ─── Trophy celebration ─── */
+/* ─── Trophy celebration with fly-to-card effect ─── */
 function TrophyCelebration({ teamName, onDone }) {
-  useEffect(() => { const t = setTimeout(onDone, 3500); return () => clearTimeout(t); }, [onDone]);
+  const [phase, setPhase] = useState('show'); // show → shrink → done
+
+  useEffect(() => {
+    // Phase 1: Show celebration for 2s
+    const t1 = setTimeout(() => setPhase('shrink'), 2000);
+    // Phase 2: Shrink animation takes 0.8s, then close
+    const t2 = setTimeout(onDone, 3000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [onDone]);
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md animate-fade-in" onClick={onDone}>
-      <div className="text-center relative px-6">
-        <div className="absolute inset-0 -inset-x-20 -top-32 overflow-hidden pointer-events-none">
-          {[...Array(30)].map((_, i) => (
-            <div key={i} className="absolute rounded-full animate-confetti"
-              style={{
-                width: `${4 + Math.random() * 6}px`, height: `${4 + Math.random() * 6}px`,
-                left: `${Math.random() * 100}%`,
-                backgroundColor: ['#D4AF37','#FFD700','#FFA500','#FF6347','#4169E1','#32CD32','#FF69B4','#00CED1','#9B59B6','#E74C3C'][i % 10],
-                animationDelay: `${Math.random() * 0.8}s`,
-                animationDuration: `${1.5 + Math.random() * 1.5}s`,
-              }} />
-          ))}
-        </div>
-        <div className="absolute inset-0 -inset-20 bg-fifa-gold/15 rounded-full blur-[80px] animate-pulse" />
-        <div className="relative animate-trophy-enter">
+    <div
+      className={`fixed inset-0 z-[100] flex items-center justify-center transition-all duration-700 ${
+        phase === 'shrink' ? 'bg-black/0 backdrop-blur-0' : 'bg-black/80 backdrop-blur-md'
+      }`}
+      onClick={onDone}
+    >
+      <div className={`text-center relative px-6 transition-all duration-700 ease-in-out ${
+        phase === 'shrink'
+          ? 'translate-y-[40vh] scale-[0.15] opacity-40'
+          : 'translate-y-0 scale-100 opacity-100'
+      }`}>
+        {/* Confetti — only during show phase */}
+        {phase === 'show' && (
+          <div className="absolute inset-0 -inset-x-20 -top-32 overflow-hidden pointer-events-none">
+            {[...Array(30)].map((_, i) => (
+              <div key={i} className="absolute rounded-full animate-confetti"
+                style={{
+                  width: `${4 + Math.random() * 6}px`, height: `${4 + Math.random() * 6}px`,
+                  left: `${Math.random() * 100}%`,
+                  backgroundColor: ['#D4AF37','#FFD700','#FFA500','#FF6347','#4169E1','#32CD32','#FF69B4','#00CED1','#9B59B6','#E74C3C'][i % 10],
+                  animationDelay: `${Math.random() * 0.8}s`,
+                  animationDuration: `${1.5 + Math.random() * 1.5}s`,
+                }} />
+            ))}
+          </div>
+        )}
+
+        <div className={`absolute inset-0 -inset-20 bg-fifa-gold/15 rounded-full blur-[80px] transition-opacity duration-700 ${
+          phase === 'shrink' ? 'opacity-0' : 'animate-pulse'
+        }`} />
+
+        <div className={`relative ${phase === 'show' ? 'animate-trophy-enter' : ''}`}>
           <div className="text-[120px] leading-none drop-shadow-[0_0_40px_rgba(212,175,55,0.4)]">🏆</div>
         </div>
-        <h2 className="text-3xl font-black text-white mt-2 animate-slide-up">{teamName}</h2>
-        <p className="text-fifa-gold text-lg font-bold mt-1 animate-slide-up" style={{ animationDelay: '0.15s' }}>World Cup Champions!</p>
-        <div className="mt-6 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-          <span className="text-gray-500 text-xs bg-white/5 px-4 py-1.5 rounded-full">tap to dismiss</span>
-        </div>
+
+        <h2 className={`text-3xl font-black text-white mt-2 transition-opacity duration-500 ${
+          phase === 'shrink' ? 'opacity-0' : 'animate-slide-up'
+        }`}>{teamName}</h2>
+
+        <p className={`text-fifa-gold text-lg font-bold mt-1 transition-opacity duration-500 ${
+          phase === 'shrink' ? 'opacity-0' : 'animate-slide-up'
+        }`} style={{ animationDelay: '0.15s' }}>World Cup Champions!</p>
       </div>
     </div>
   );
