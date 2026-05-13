@@ -50,23 +50,23 @@ INSERT INTO quiz_questions (quiz_id, question_text, option_a, option_b, option_c
 -- -----------------------------------------
 -- Polls
 -- -----------------------------------------
-INSERT INTO polls (title, description, is_active, expires_at) VALUES
-('Who will win the 2026 FIFA World Cup?', 'Cast your vote for the team you think will lift the trophy in 2026!', TRUE, '2026-07-19 00:00:00'),
-('Best Player of the Tournament?', 'Who do you think will be named the Golden Ball winner?', TRUE, '2026-07-19 00:00:00');
+INSERT INTO polls (title, description, poll_type, is_active, expires_at) VALUES
+('Who will win the 2026 FIFA World Cup?', 'Cast your vote for the team you think will lift the trophy in 2026!', 'trophy', TRUE, '2026-07-19 00:00:00'),
+('Best Player of the Tournament?', 'Who do you think will be named the Golden Ball winner?', 'default', TRUE, '2026-07-19 00:00:00');
 
 -- -----------------------------------------
--- Poll Options
+-- Poll Options (with trophy counts for World Cup winners)
 -- -----------------------------------------
-INSERT INTO poll_options (poll_id, option_text, vote_count, sort_order) VALUES
-(1, 'Brazil', 34, 1),
-(1, 'Argentina', 28, 2),
-(1, 'France', 22, 3),
-(1, 'England', 18, 4),
-(1, 'United States', 15, 5);
+INSERT INTO poll_options (poll_id, option_text, vote_count, trophy_count, sort_order) VALUES
+(1, 'Brazil', 34, 5, 1),
+(1, 'Argentina', 28, 3, 2),
+(1, 'France', 22, 2, 3),
+(1, 'England', 18, 1, 4),
+(1, 'United States', 15, 0, 5);
 
-INSERT INTO poll_options (poll_id, option_text, vote_count, sort_order) VALUES
-(2, 'Lionel Messi', 42, 1),
-(2, 'Kylian Mbappe', 38, 2),
-(2, 'Vinicius Jr', 25, 3),
-(2, 'Jude Bellingham', 20, 4),
-(2, 'Erling Haaland', 18, 5);
+INSERT INTO poll_options (poll_id, option_text, vote_count, trophy_count, sort_order) VALUES
+(2, 'Lionel Messi', 42, 0, 1),
+(2, 'Kylian Mbappe', 38, 0, 2),
+(2, 'Vinicius Jr', 25, 0, 3),
+(2, 'Jude Bellingham', 20, 0, 4),
+(2, 'Erling Haaland', 18, 0, 5);

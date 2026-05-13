@@ -134,12 +134,37 @@ function PollCard({ poll, onVote, votingId, isAuthenticated }) {
                   )}
                 </div>
 
-                {/* Label */}
+                {/* Label + Trophies */}
                 <div className="flex-1 min-w-0 text-left">
-                  <span className={`text-sm font-semibold ${isMyVote ? 'text-fifa-gold' : 'text-gray-200'}`}>
-                    {option.option_text}
-                  </span>
-                  {isMyVote && <span className="text-[10px] text-fifa-gold/70 ml-1.5">✓ voted</span>}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className={`text-sm font-semibold ${isMyVote ? 'text-fifa-gold' : 'text-gray-200'}`}>
+                      {option.option_text}
+                    </span>
+                    {isMyVote && <span className="text-[10px] text-fifa-gold/70">✓</span>}
+                  </div>
+                  {/* Trophy row — only for trophy-type polls */}
+                  {poll.poll_type === 'trophy' && (option.trophy_count > 0 || isMyVote) && (() => {
+                    const base = option.trophy_count || 0;
+                    const extra = isMyVote ? 1 : 0;
+                    const total = base + extra;
+                    return (
+                      <div className="flex items-center gap-0.5 mt-1">
+                        {[...Array(total)].map((_, ti) => (
+                          <span
+                            key={ti}
+                            className={`text-sm ${
+                              ti === total - 1 && extra
+                                ? 'animate-trophy-enter drop-shadow-[0_0_6px_rgba(212,175,55,0.8)] scale-110'
+                                : 'opacity-80'
+                            }`}
+                          >🏆</span>
+                        ))}
+                        {extra > 0 && (
+                          <span className="text-[9px] text-fifa-gold/60 ml-1 font-medium">+1 your vote!</span>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Percentage */}

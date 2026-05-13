@@ -118,11 +118,11 @@ const getAllAdmin = async () => {
   return rows;
 };
 
-const createPoll = async ({ title, description, is_active, expires_at, options }) => {
+const createPoll = async ({ title, description, poll_type, is_active, expires_at, options }) => {
   const [result] = await db.query(
-    `INSERT INTO polls (title, description, is_active, expires_at)
-     VALUES (?, ?, ?, ?)`,
-    [title, description || null, is_active !== undefined ? is_active : 1, expires_at || null]
+    `INSERT INTO polls (title, description, poll_type, is_active, expires_at)
+     VALUES (?, ?, ?, ?, ?)`,
+    [title, description || null, poll_type || 'default', is_active !== undefined ? is_active : 1, expires_at || null]
   );
 
   const pollId = result.insertId;
@@ -130,8 +130,8 @@ const createPoll = async ({ title, description, is_active, expires_at, options }
   if (options && options.length > 0) {
     for (const opt of options) {
       await db.query(
-        `INSERT INTO poll_options (poll_id, option_text) VALUES (?, ?)`,
-        [pollId, opt.option_text || opt]
+        `INSERT INTO poll_options (poll_id, option_text, trophy_count) VALUES (?, ?, ?)`,
+        [pollId, opt.option_text || opt, opt.trophy_count || 0]
       );
     }
   }
@@ -139,7 +139,7 @@ const createPoll = async ({ title, description, is_active, expires_at, options }
   return getById(pollId);
 };
 
-const updatePoll = async (id, { title, description, is_active, expires_at }) => {
+const updatePoll = async (id, { title, description, poll_type, is_active, expires_at }) => {
   const [polls] = await db.query('SELECT id FROM polls WHERE id = ?', [id]);
   if (polls.length === 0) {
     throw new AppError('Poll not found', 404);
@@ -150,6 +150,7 @@ const updatePoll = async (id, { title, description, is_active, expires_at }) => 
 
   if (title !== undefined) { fields.push('title = ?'); params.push(title); }
   if (description !== undefined) { fields.push('description = ?'); params.push(description); }
+  if (poll_type !== undefined) { fields.push('poll_type = ?'); params.push(poll_type); }
   if (is_active !== undefined) { fields.push('is_active = ?'); params.push(is_active); }
   if (expires_at !== undefined) { fields.push('expires_at = ?'); params.push(expires_at); }
 
@@ -177,15 +178,15 @@ const deletePoll = async (id) => {
   return { id };
 };
 
-const addOption = async (pollId, { option_text }) => {
+const addOption = async (pollId, { option_text, trophy_count }) => {
   const [polls] = await db.query('SELECT id FROM polls WHERE id = ?', [pollId]);
   if (polls.length === 0) {
     throw new AppError('Poll not found', 404);
   }
 
   const [result] = await db.query(
-    `INSERT INTO poll_options (poll_id, option_text) VALUES (?, ?)`,
-    [pollId, option_text]
+    `INSERT INTO poll_options (poll_id, option_text, trophy_count) VALUES (?, ?, ?)`,
+    [pollId, option_text, trophy_count || 0]
   );
 
   const [rows] = await db.query('SELECT * FROM poll_options WHERE id = ?', [result.insertId]);

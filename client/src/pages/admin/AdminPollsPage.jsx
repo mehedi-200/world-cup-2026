@@ -10,7 +10,12 @@ const ACTIVE_OPTIONS = [
   { value: 0, label: 'Inactive' },
 ];
 
-const emptyForm = { title: '', description: '', expires_at: '', is_active: 1 };
+const POLL_TYPE_OPTIONS = [
+  { value: 'default', label: 'Default' },
+  { value: 'trophy', label: 'Trophy (World Cup)' },
+];
+
+const emptyForm = { title: '', description: '', expires_at: '', is_active: 1, poll_type: 'default' };
 
 export default function AdminPollsPage() {
   const { showToast } = useToast();
@@ -58,14 +63,15 @@ export default function AdminPollsPage() {
       description: poll.description || '',
       expires_at: poll.expires_at ? poll.expires_at.slice(0, 16) : '',
       is_active: poll.is_active != null ? Number(poll.is_active) : 1,
+      poll_type: poll.poll_type || 'default',
     });
-    const existingOptions = Array.isArray(poll.options) ? poll.options.map((o) => ({ option_text: o.option_text || '' })) : [{ option_text: '' }, { option_text: '' }];
+    const existingOptions = Array.isArray(poll.options) ? poll.options.map((o) => ({ option_text: o.option_text || '', trophy_count: o.trophy_count || 0 })) : [{ option_text: '', trophy_count: 0 }, { option_text: '', trophy_count: 0 }];
     setOptions(existingOptions.length >= 2 ? existingOptions : [{ option_text: '' }, { option_text: '' }]);
     setShowForm(true);
   };
 
   const addOption = () => {
-    setOptions((prev) => [...prev, { option_text: '' }]);
+    setOptions((prev) => [...prev, { option_text: '', trophy_count: 0 }]);
   };
 
   const removeOption = (index) => {
@@ -73,8 +79,8 @@ export default function AdminPollsPage() {
     setOptions((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const updateOption = (index, value) => {
-    setOptions((prev) => prev.map((opt, i) => (i === index ? { option_text: value } : opt)));
+  const updateOption = (index, field, value) => {
+    setOptions((prev) => prev.map((opt, i) => (i === index ? { ...opt, [field]: value } : opt)));
   };
 
   const handleSubmit = async (e) => {
@@ -89,9 +95,13 @@ export default function AdminPollsPage() {
       const payload = {
         title: form.title,
         description: form.description,
+        poll_type: form.poll_type,
         is_active: Number(form.is_active),
         expires_at: form.expires_at || null,
-        options: validOptions,
+        options: validOptions.map(o => ({
+          option_text: o.option_text,
+          trophy_count: form.poll_type === 'trophy' ? (parseInt(o.trophy_count) || 0) : 0,
+        })),
       };
       if (editPoll) {
         await adminService.updatePoll(editPoll.id, payload);
@@ -245,7 +255,13 @@ export default function AdminPollsPage() {
               rows={3}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Select
+              label="Poll Type"
+              options={POLL_TYPE_OPTIONS}
+              value={form.poll_type}
+              onChange={(e) => setForm({ ...form, poll_type: e.target.value })}
+            />
             <Input
               label="Expires At"
               type="datetime-local"
@@ -272,9 +288,19 @@ export default function AdminPollsPage() {
                   <Input
                     placeholder={`Option ${i + 1}`}
                     value={opt.option_text}
-                    onChange={(e) => updateOption(i, e.target.value)}
+                    onChange={(e) => updateOption(i, 'option_text', e.target.value)}
                     required
                   />
+                  {form.poll_type === 'trophy' && (
+                    <div className="w-24 shrink-0">
+                      <Input
+                        type="number"
+                        placeholder="🏆"
+                        value={opt.trophy_count || ''}
+                        onChange={(e) => updateOption(i, 'trophy_count', e.target.value)}
+                      />
+                    </div>
+                  )}
                   {options.length > 2 && (
                     <Button type="button" size="sm" variant="danger" onClick={() => removeOption(i)}>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
