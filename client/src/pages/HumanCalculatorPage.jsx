@@ -28,10 +28,9 @@ export default function HumanCalculatorPage() {
   }, [name, selectedStatuses]);
 
   const handleReplay = () => {
-    setScreen('welcome');
-    setName('');
     setSelectedStatuses([]);
     setResult(null);
+    setScreen('select');
   };
 
   return (
