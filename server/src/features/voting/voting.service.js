@@ -56,27 +56,42 @@ const castVote = async (userId, pollId, optionId) => {
   }
 
   const [existingVote] = await db.query(
-    'SELECT id FROM votes WHERE user_id = ? AND poll_id = ?',
+    'SELECT id, option_id FROM votes WHERE user_id = ? AND poll_id = ?',
     [userId, pollId]
   );
 
   if (existingVote.length > 0) {
-    throw new AppError('You have already voted on this poll', 409);
+    const oldOptionId = existingVote[0].option_id;
+    if (oldOptionId === optionId) {
+      return getUserPoll(userId, pollId);
+    }
+    // Change vote: decrement old, update vote row, increment new
+    await db.query('UPDATE poll_options SET vote_count = GREATEST(vote_count - 1, 0) WHERE id = ?', [oldOptionId]);
+    await db.query('UPDATE votes SET option_id = ? WHERE id = ?', [optionId, existingVote[0].id]);
+    await db.query('UPDATE poll_options SET vote_count = vote_count + 1 WHERE id = ?', [optionId]);
+  } else {
+    await db.query(
+      'INSERT INTO votes (user_id, poll_id, option_id) VALUES (?, ?, ?)',
+      [userId, pollId, optionId]
+    );
+    await db.query(
+      'UPDATE poll_options SET vote_count = vote_count + 1 WHERE id = ?',
+      [optionId]
+    );
   }
 
-  await db.query(
-    'INSERT INTO votes (user_id, poll_id, option_id) VALUES (?, ?, ?)',
-    [userId, pollId, optionId]
+  return getUserPoll(userId, pollId);
+};
+
+// Get poll with user's vote info
+const getUserPoll = async (userId, pollId) => {
+  const poll = await getById(pollId);
+  const [userVote] = await db.query(
+    'SELECT option_id FROM votes WHERE user_id = ? AND poll_id = ?',
+    [userId, pollId]
   );
-
-  await db.query(
-    'UPDATE poll_options SET vote_count = vote_count + 1 WHERE id = ?',
-    [optionId]
-  );
-
-  const updatedPoll = await getById(pollId);
-
-  return updatedPoll;
+  poll.user_vote = userVote.length > 0 ? userVote[0].option_id : null;
+  return poll;
 };
 
 const getAllAdmin = async () => {
