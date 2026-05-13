@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 const primaryTabs = [
@@ -20,6 +20,9 @@ export default function AdminBottomNav() {
   const [showMore, setShowMore] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Close More menu on any navigation
+  useEffect(() => { setShowMore(false); }, [location.pathname]);
 
   const goTo = (path) => { navigate(path); setShowMore(false); };
 

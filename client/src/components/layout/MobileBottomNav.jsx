@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
@@ -21,6 +21,9 @@ export default function MobileBottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
+
+  // Close More menu on any navigation
+  useEffect(() => { setShowMore(false); }, [location.pathname]);
 
   if (location.pathname.startsWith('/admin') || location.pathname === '/login' || location.pathname === '/register') {
     return null;
