@@ -13,7 +13,7 @@ export default function QuizPage() {
         quizzes={quizzes}
         loading={loading}
         error={error}
-        onQuizClick={(id) => navigate(`/quizzes/${id}`)}
+        onStartQuiz={(quiz) => navigate(`/quizzes/${quiz.id}`)}
       />
     </PageLayout>
   );
