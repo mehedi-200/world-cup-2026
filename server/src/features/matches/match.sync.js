@@ -22,6 +22,9 @@ const STATUS_MAP = {
 const STAGE_MAP = {
   REGULAR_SEASON: 'group',
   GROUP_STAGE: 'group',
+  LAST_64: 'group',
+  LAST_32: 'round_of_32',
+  ROUND_OF_32: 'round_of_32',
   LAST_16: 'round_of_16',
   ROUND_OF_16: 'round_of_16',
   QUARTER_FINALS: 'quarter_final',
@@ -95,6 +98,14 @@ async function syncMatch(apiMatch) {
   const awayScore = apiMatch.score?.fullTime?.away ?? null;
   const minute = apiMatch.minute ? parseInt(apiMatch.minute, 10) : null;
 
+  // Resolve group from API group name (e.g. "GROUP_A" -> find group A)
+  let groupId = null;
+  if (apiMatch.group) {
+    const groupLetter = apiMatch.group.replace('GROUP_', '');
+    const [groups] = await db.query('SELECT id FROM `groups` WHERE name = ?', [groupLetter]);
+    if (groups.length > 0) groupId = groups[0].id;
+  }
+
   // Convert ISO date to MySQL datetime format
   const matchDate = apiMatch.utcDate
     ? new Date(apiMatch.utcDate).toISOString().slice(0, 19).replace('T', ' ')
@@ -110,13 +121,16 @@ async function syncMatch(apiMatch) {
     await db.query(
       `UPDATE matches SET
         home_score = ?, away_score = ?, status = ?, minute = ?,
-        venue = ?, competition_name = ?, competition_code = ?,
+        stage = ?, group_id = COALESCE(?, group_id), match_date = COALESCE(?, match_date),
+        venue = COALESCE(?, venue), city = COALESCE(?, city),
+        competition_name = ?, competition_code = ?,
         competition_emblem = ?, home_team_crest = ?, away_team_crest = ?,
         updated_at = NOW()
       WHERE external_id = ?`,
       [
         homeScore, awayScore, status, minute,
-        apiMatch.venue || null,
+        stage, groupId, matchDate,
+        apiMatch.venue || null, apiMatch.area?.name || null,
         apiMatch.competition?.name || null,
         apiMatch.competition?.code || null,
         apiMatch.competition?.emblem || null,
@@ -131,13 +145,13 @@ async function syncMatch(apiMatch) {
   // Insert new match
   const [result] = await db.query(
     `INSERT INTO matches
-      (external_id, home_team_id, away_team_id, stage, match_date, venue, city,
+      (external_id, home_team_id, away_team_id, group_id, stage, match_date, venue, city,
        home_score, away_score, status, minute,
        competition_name, competition_code, competition_emblem,
        home_team_crest, away_team_crest)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      apiMatch.id, homeTeamId, awayTeamId, stage,
+      apiMatch.id, homeTeamId, awayTeamId, groupId, stage,
       matchDate, apiMatch.venue || null,
       apiMatch.area?.name || null,
       homeScore, awayScore, status, minute,
