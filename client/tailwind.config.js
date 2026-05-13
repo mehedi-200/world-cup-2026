@@ -40,6 +40,20 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
+      animation: {
+        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+        'score-pulse': 'score-pulse 1.5s ease-in-out infinite',
+      },
+      keyframes: {
+        'glow-pulse': {
+          '0%, 100%': { boxShadow: '0 0 5px rgba(239, 68, 68, 0.3), 0 0 20px rgba(239, 68, 68, 0.1)' },
+          '50%': { boxShadow: '0 0 15px rgba(239, 68, 68, 0.5), 0 0 40px rgba(239, 68, 68, 0.2)' },
+        },
+        'score-pulse': {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.05)' },
+        },
+      },
     },
   },
   plugins: [],

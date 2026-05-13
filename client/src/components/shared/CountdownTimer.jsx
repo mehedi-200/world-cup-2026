@@ -19,26 +19,41 @@ const CountdownTimer = ({ targetDate }) => {
 
   if (!time) {
     return (
-      <span className="text-fifa-gold font-bold text-lg">Kickoff!</span>
+      <div className="text-center">
+        <span className="text-fifa-gold font-extrabold text-lg tracking-wide animate-pulse">
+          Kickoff!
+        </span>
+      </div>
     );
   }
 
   const units = [
     { value: time.days, label: 'Days' },
-    { value: time.hours, label: 'Hours' },
-    { value: time.minutes, label: 'Mins' },
-    { value: time.seconds, label: 'Secs' },
+    { value: time.hours, label: 'Hrs' },
+    { value: time.minutes, label: 'Min' },
+    { value: time.seconds, label: 'Sec' },
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2">
-      {units.map((unit) => (
-        <div key={unit.label} className="bg-white/5 rounded-lg p-2 text-center">
-          <div className="text-lg font-bold text-fifa-gold">
-            {String(unit.value).padStart(2, '0')}
+    <div className="flex items-center justify-center gap-1.5">
+      {units.map((unit, i) => (
+        <React.Fragment key={unit.label}>
+          {/* Unit box */}
+          <div className="flex flex-col items-center">
+            <div className="bg-gradient-to-b from-white/10 to-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 min-w-[40px] text-center shadow-inner">
+              <span className="text-lg font-extrabold text-fifa-gold drop-shadow-[0_0_6px_rgba(212,175,55,0.3)]">
+                {String(unit.value).padStart(2, '0')}
+              </span>
+            </div>
+            <span className="text-[9px] font-medium text-gray-500 mt-1 uppercase tracking-wider">
+              {unit.label}
+            </span>
           </div>
-          <div className="text-xs text-gray-500">{unit.label}</div>
-        </div>
+          {/* Colon separator (not after last) */}
+          {i < units.length - 1 && (
+            <span className="text-fifa-gold/50 font-bold text-sm -mt-3">:</span>
+          )}
+        </React.Fragment>
       ))}
     </div>
   );

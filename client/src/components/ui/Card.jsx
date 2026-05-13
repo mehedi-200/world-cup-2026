@@ -18,23 +18,31 @@ const Card = ({
   return (
     <div
       className={`
-        bg-white/5 backdrop-blur-md rounded-xl
+        relative bg-white/5 backdrop-blur-md rounded-xl overflow-hidden
         ${bordered ? 'border border-white/10' : ''}
         ${paddingClasses[padding] || paddingClasses.md}
-        ${hoverable ? 'hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer' : ''}
+        ${
+          hoverable
+            ? 'cursor-pointer transition-all duration-300 hover:bg-white/[0.08] hover:border-white/20 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 group'
+            : 'transition-colors duration-200'
+        }
         ${className}
       `.trim()}
       onClick={onClick}
       {...rest}
     >
-      {children}
+      {/* Gradient border glow on hover */}
+      {hoverable && (
+        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-r from-fifa-gold/10 via-transparent to-fifa-blue/10" />
+      )}
+      <div className="relative z-10">{children}</div>
     </div>
   );
 };
 
 const Header = ({ children, className = '', ...rest }) => (
   <div
-    className={`pb-3 border-b border-white/10 font-semibold text-lg text-gray-100 ${className}`.trim()}
+    className={`pb-4 mb-1 border-b border-white/10 font-semibold text-lg text-gray-100 ${className}`.trim()}
     {...rest}
   >
     {children}
@@ -49,7 +57,7 @@ const Body = ({ children, className = '', ...rest }) => (
 
 const Footer = ({ children, className = '', ...rest }) => (
   <div
-    className={`pt-3 border-t border-white/10 ${className}`.trim()}
+    className={`pt-4 mt-1 border-t border-white/10 ${className}`.trim()}
     {...rest}
   >
     {children}

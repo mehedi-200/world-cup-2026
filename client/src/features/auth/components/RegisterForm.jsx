@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Card from '@/components/ui/Card';
+import { useNavigate } from 'react-router-dom';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { useAuth } from '../hooks/useAuth';
@@ -27,10 +26,8 @@ const RegisterForm = () => {
     if (!formData.username.trim()) newErrors.username = 'Username is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     if (!formData.password) newErrors.password = 'Password is required';
-    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
+    if (formData.password.length > 0 && formData.password.length < 6) newErrors.password = 'At least 6 characters';
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
     return newErrors;
   };
 
@@ -50,7 +47,6 @@ const RegisterForm = () => {
       navigate('/', { replace: true });
     } catch (err) {
       const data = err.response?.data;
-      // Map field-level validation errors to form fields
       if (data?.errors && Array.isArray(data.errors)) {
         const fieldErrors = {};
         for (const e of data.errors) {
@@ -62,9 +58,7 @@ const RegisterForm = () => {
           setErrors({ general: data.message || 'Registration failed.' });
         }
       } else {
-        setErrors({
-          general: data?.message || err.message || 'Registration failed. Please try again.',
-        });
+        setErrors({ general: data?.message || err.message || 'Registration failed. Please try again.' });
       }
     } finally {
       setLoading(false);
@@ -72,81 +66,66 @@ const RegisterForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white/5 backdrop-blur-xl border border-white/10">
-      <Card.Header>
-        <h2 className="text-2xl font-bold text-center text-gray-100">Create Account</h2>
-        <p className="text-gray-400 text-sm text-center mt-1">
-          Join the FIFA World Cup 2026 prediction game
-        </p>
-      </Card.Header>
+    <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {errors.general && (
+          <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 flex items-start gap-2">
+            <svg className="w-5 h-5 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <p className="text-red-400 text-sm">{errors.general}</p>
+          </div>
+        )}
 
-      <Card.Body>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {errors.general && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-red-400 text-sm">
-              {errors.general}
-            </div>
-          )}
+        <Input
+          label="Username"
+          type="text"
+          name="username"
+          placeholder="Choose a username"
+          value={formData.username}
+          onChange={handleChange}
+          error={errors.username}
+          required
+        />
 
-          <Input
-            label="Username"
-            type="text"
-            name="username"
-            placeholder="Choose a username"
-            value={formData.username}
-            onChange={handleChange}
-            error={errors.username}
-            required
-          />
+        <Input
+          label="Email"
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          value={formData.email}
+          onChange={handleChange}
+          error={errors.email}
+          required
+        />
 
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            error={errors.email}
-            required
-          />
+        <Input
+          label="Password"
+          type="password"
+          name="password"
+          placeholder="Min. 6 characters"
+          value={formData.password}
+          onChange={handleChange}
+          error={errors.password}
+          required
+        />
 
-          <Input
-            label="Password"
-            type="password"
-            name="password"
-            placeholder="Create a password"
-            value={formData.password}
-            onChange={handleChange}
-            error={errors.password}
-            required
-          />
+        <Input
+          label="Confirm Password"
+          type="password"
+          name="confirmPassword"
+          placeholder="Repeat your password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          error={errors.confirmPassword}
+          required
+        />
 
-          <Input
-            label="Confirm Password"
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm your password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            error={errors.confirmPassword}
-            required
-          />
-
-          <Button type="submit" fullWidth isLoading={loading}>
-            Create Account
-          </Button>
-        </form>
-      </Card.Body>
-
-      <Card.Footer className="text-center">
-        <p className="text-gray-400 text-sm">
-          Already have an account?{' '}
-          <Link to="/login" className="text-primary-400 hover:text-primary-300 font-medium">
-            Sign In
-          </Link>
-        </p>
-      </Card.Footer>
-    </Card>
+        <Button type="submit" variant="gold" fullWidth isLoading={loading} size="lg">
+          Create Account
+        </Button>
+      </form>
+    </div>
   );
 };
 
