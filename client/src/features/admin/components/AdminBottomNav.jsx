@@ -28,24 +28,30 @@ export default function AdminBottomNav() {
       {showMore && (
         <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)}>
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-          <div className="absolute bottom-[72px] left-2 right-2 animate-slide-up" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-[#1c1c1e]/95 backdrop-blur-2xl rounded-[18px] overflow-hidden shadow-2xl">
+          <div className="absolute bottom-0 left-0 right-0 h-[50vh] animate-slide-up" onClick={(e) => e.stopPropagation()}>
+            <div className="h-full bg-[#1c1c1e]/95 backdrop-blur-2xl rounded-t-[20px] overflow-hidden shadow-2xl flex flex-col">
               {/* Handle */}
-              <div className="flex justify-center pt-2.5 pb-1">
+              <div className="flex justify-center pt-3 pb-2 shrink-0">
                 <div className="w-9 h-[5px] rounded-full bg-white/20" />
               </div>
+              {/* Title */}
+              <div className="px-5 pb-3 shrink-0">
+                <h3 className="text-[15px] font-semibold text-white">More</h3>
+              </div>
               {/* Grid */}
-              <div className="grid grid-cols-5 gap-y-4 px-3 pt-2 pb-5">
-                {moreItems.map((item) => (
-                  <button key={item.to} onClick={() => goTo(item.to)} className="flex flex-col items-center gap-[6px] active:opacity-60 transition-opacity">
-                    <div className={`w-[50px] h-[50px] ${item.bg} rounded-[13px] flex items-center justify-center shadow-sm`}>
-                      <svg className="w-[22px] h-[22px] text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
-                      </svg>
-                    </div>
-                    <span className="text-[11px] text-[#ebebf0] leading-none">{item.label}</span>
-                  </button>
-                ))}
+              <div className="flex-1 overflow-y-auto px-4 pb-6">
+                <div className="grid grid-cols-4 gap-x-2 gap-y-5">
+                  {moreItems.map((item) => (
+                    <button key={item.to} onClick={() => goTo(item.to)} className="flex flex-col items-center gap-[7px] active:opacity-60 transition-opacity">
+                      <div className={`w-[54px] h-[54px] ${item.bg} rounded-[14px] flex items-center justify-center shadow-sm`}>
+                        <svg className="w-[24px] h-[24px] text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+                        </svg>
+                      </div>
+                      <span className="text-[11px] text-[#ebebf0] leading-tight text-center">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
