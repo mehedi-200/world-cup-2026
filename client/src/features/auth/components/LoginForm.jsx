@@ -26,7 +26,10 @@ const LoginForm = () => {
       await login(formData.email, formData.password);
       navigate('/', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      const msg = err.response?.data?.message
+        || err.message
+        || 'Login failed. Please try again.';
+      setError(msg);
     } finally {
       setLoading(false);
     }

@@ -30,10 +30,13 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback(async (email, password) => {
-    const { data } = await authService.login({ email, password });
-    const payload = data.data || data;
-    const responseToken = payload.token || data.token;
-    const responseUser = payload.user || payload;
+    const res = await authService.login({ email, password });
+    const payload = res.data?.data || res.data;
+    const responseToken = payload?.token;
+    const responseUser = payload?.user;
+    if (!responseToken || !responseUser) {
+      throw new Error('Invalid response from server');
+    }
     localStorage.setItem('token', responseToken);
     setToken(responseToken);
     setUser(responseUser);
@@ -41,10 +44,13 @@ export function AuthProvider({ children }) {
   }, []);
 
   const register = useCallback(async (username, email, password) => {
-    const { data } = await authService.register({ username, email, password });
-    const payload = data.data || data;
-    const responseToken = payload.token || data.token;
-    const responseUser = payload.user || payload;
+    const res = await authService.register({ username, email, password });
+    const payload = res.data?.data || res.data;
+    const responseToken = payload?.token;
+    const responseUser = payload?.user;
+    if (!responseToken || !responseUser) {
+      throw new Error('Invalid response from server');
+    }
     localStorage.setItem('token', responseToken);
     setToken(responseToken);
     setUser(responseUser);

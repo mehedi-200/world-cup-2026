@@ -49,9 +49,23 @@ const RegisterForm = () => {
       await register(formData.username, formData.email, formData.password);
       navigate('/', { replace: true });
     } catch (err) {
-      setErrors({
-        general: err.response?.data?.message || 'Registration failed. Please try again.',
-      });
+      const data = err.response?.data;
+      // Map field-level validation errors to form fields
+      if (data?.errors && Array.isArray(data.errors)) {
+        const fieldErrors = {};
+        for (const e of data.errors) {
+          if (e.field) fieldErrors[e.field] = e.message;
+        }
+        if (Object.keys(fieldErrors).length > 0) {
+          setErrors(fieldErrors);
+        } else {
+          setErrors({ general: data.message || 'Registration failed.' });
+        }
+      } else {
+        setErrors({
+          general: data?.message || err.message || 'Registration failed. Please try again.',
+        });
+      }
     } finally {
       setLoading(false);
     }

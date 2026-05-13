@@ -8,7 +8,7 @@ USE worldcup2026;
 -- -----------------------------------------
 INSERT INTO users (username, email, password_hash, avatar_url, total_points, role) VALUES
 ('admin', 'admin@worldcup2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'admin'),
-('testuser', 'testuser@worldcup2026.com', '$2a$10$Yx5EHWXh0B5RJXwFGWb5IuDdBVXeGGmGn4dIiGNGGPD1p0VnSJKYi', NULL, 0, 'user'),
+('testuser', 'testuser@worldcup2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'user'),
 ('FootballKing', 'king@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 85, 'user'),
 ('GoalMaster', 'goal@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 72, 'user'),
 ('SoccerPro99', 'pro@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 68, 'user'),
