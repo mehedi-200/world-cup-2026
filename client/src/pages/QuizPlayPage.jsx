@@ -1,52 +1,69 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Loader, Button } from '@/components/ui';
+import { Loader } from '@/components/ui';
 import { PageLayout } from '@/components/layout';
 import { QuizPlayer, QuizResult } from '@/features/quiz';
 import { ProtectedRoute } from '@/features/auth';
 import quizService from '@/features/quiz/services/quizService';
+import { useToast } from '@/hooks/useToast';
 
 function QuizPlayContent() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     quizService.getById(id)
-      .then((res) => setQuiz(res.data.data))
-      .catch(() => navigate('/quizzes'))
+      .then((res) => {
+        const d = res.data.data;
+        setQuiz(d?.quiz || d);
+      })
+      .catch(() => {
+        showToast('Quiz not found', 'error');
+        navigate('/quizzes');
+      })
       .finally(() => setLoading(false));
-  }, [id, navigate]);
+  }, [id, navigate, showToast]);
 
   const handleComplete = async (answers) => {
-    const res = await quizService.submitAttempt(id, { answers });
-    setResult(res.data.data?.attempt || res.data.data);
+    setSubmitting(true);
+    try {
+      const res = await quizService.submitAttempt(id, { answers });
+      const d = res.data.data;
+      setResult(d?.attempt || d);
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to submit quiz', 'error');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  if (loading) return <Loader size="lg" text="Loading quiz..." />;
+  if (loading) return <div className="flex justify-center py-20"><Loader size="lg" text="Loading quiz..." /></div>;
 
   if (result) {
     return (
-      <PageLayout title={quiz.title}>
+      <PageLayout title={quiz?.title || 'Quiz Result'}>
         <QuizResult
           score={result.score}
           totalQuestions={result.total_questions}
           totalPoints={result.points_earned}
+          onGoBack={() => navigate('/quizzes')}
         />
-        <div className="flex justify-center gap-4 mt-6">
-          <Button variant="secondary" onClick={() => navigate('/quizzes')}>
-            Back to Quizzes
-          </Button>
-        </div>
       </PageLayout>
     );
   }
 
   return (
-    <PageLayout title={quiz.title}>
-      <QuizPlayer quiz={quiz} onComplete={handleComplete} />
+    <PageLayout title={quiz?.title || 'Quiz'} subtitle={quiz?.description}>
+      {submitting ? (
+        <div className="flex justify-center py-20"><Loader size="lg" text="Submitting..." /></div>
+      ) : (
+        <QuizPlayer quiz={quiz} onComplete={handleComplete} />
+      )}
     </PageLayout>
   );
 }

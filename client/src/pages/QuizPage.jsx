@@ -9,12 +9,14 @@ export default function QuizPage() {
 
   return (
     <PageLayout title="Quizzes" subtitle="Test your World Cup knowledge">
-      <QuizList
-        quizzes={quizzes}
-        loading={loading}
-        error={error}
-        onStartQuiz={(quiz) => navigate(`/quizzes/${quiz.id}`)}
-      />
+      <div className="max-w-lg mx-auto">
+        <QuizList
+          quizzes={quizzes}
+          loading={loading}
+          error={error}
+          onStartQuiz={(quiz) => navigate(`/quizzes/${quiz.id}`)}
+        />
+      </div>
     </PageLayout>
   );
 }

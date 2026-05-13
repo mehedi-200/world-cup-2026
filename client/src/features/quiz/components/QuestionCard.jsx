@@ -1,49 +1,56 @@
 import React from 'react';
 
+const optionKeys = ['a', 'b', 'c', 'd'];
 const optionLabels = ['A', 'B', 'C', 'D'];
 
-const QuestionCard = ({ question, selectedOption, onSelect }) => {
-  const options = question?.options || [];
+const QuestionCard = ({ question, selectedOption, onSelect, questionNumber }) => {
+  // Build options from flat fields (option_a, option_b, option_c, option_d)
+  const options = question?.options || optionKeys.map((key) => ({
+    key,
+    text: question?.[`option_${key}`],
+  })).filter(o => o.text);
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-100">
-        {question?.text || question?.question}
+    <div>
+      <p className="text-xs text-fifa-gold font-semibold uppercase tracking-wider mb-2">
+        Question {questionNumber || ''}
+      </p>
+      <h3 className="text-base md:text-lg font-bold text-white leading-snug mb-5">
+        {question?.question_text || question?.text || question?.question}
       </h3>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {options.map((option, index) => {
-          const isSelected = selectedOption === index || selectedOption === option.id;
-          const optionValue = option.id != null ? option.id : index;
+          const key = option.key || optionKeys[index];
+          const text = option.text || option.label || option;
+          const isSelected = selectedOption === key;
 
           return (
             <button
-              key={optionValue}
+              key={key}
               type="button"
-              className={`
-                w-full text-left p-3 rounded-lg cursor-pointer
-                border transition-all flex items-center gap-3
-                ${
-                  isSelected
-                    ? 'bg-primary-600/20 border-primary-600 text-gray-100'
-                    : 'bg-white/5 hover:bg-white/10 border-white/10 text-gray-300'
-                }
-              `.trim()}
-              onClick={() => onSelect?.(optionValue)}
+              onClick={() => onSelect?.(key)}
+              className={`w-full text-left rounded-2xl p-4 border transition-all duration-200 active:scale-[0.98] flex items-center gap-3 ${
+                isSelected
+                  ? 'bg-gradient-to-r from-fifa-gold/15 to-fifa-gold/5 border-fifa-gold/30'
+                  : 'bg-white/[0.03] border-white/[0.06] active:bg-white/[0.06]'
+              }`}
             >
-              <span
-                className={`
-                  w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0
-                  ${
-                    isSelected
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-white/10 text-gray-400'
-                  }
-                `.trim()}
-              >
-                {optionLabels[index] || index + 1}
+              <span className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 transition-all ${
+                isSelected
+                  ? 'bg-fifa-gold text-fifa-dark'
+                  : 'bg-white/[0.06] text-gray-400'
+              }`}>
+                {optionLabels[index]}
               </span>
-              <span>{option.text || option.label || option}</span>
+              <span className={`text-sm font-medium ${isSelected ? 'text-fifa-gold' : 'text-gray-300'}`}>
+                {text}
+              </span>
+              {isSelected && (
+                <svg className="w-5 h-5 text-fifa-gold ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
             </button>
           );
         })}
