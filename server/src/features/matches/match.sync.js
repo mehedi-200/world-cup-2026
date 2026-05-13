@@ -180,9 +180,9 @@ async function syncGoals(apiMatch, matchId) {
 // Main sync functions
 
 async function syncTodayMatches() {
-  console.log('[Sync] Fetching today\'s matches from football-data.org...');
+  console.log('[Sync] Fetching today\'s World Cup matches from football-data.org...');
   try {
-    const data = await fetchFromApi('/matches');
+    const data = await fetchFromApi('/competitions/WC/matches');
     const matches = data.matches || [];
     console.log(`[Sync] Found ${matches.length} matches`);
 
@@ -253,7 +253,7 @@ async function syncCompetition(competitionId) {
 // Get live matches and push updates via socket
 async function syncLiveAndEmit(io) {
   try {
-    const data = await fetchFromApi('/matches?status=LIVE,IN_PLAY,PAUSED');
+    const data = await fetchFromApi('/competitions/WC/matches?status=LIVE,IN_PLAY,PAUSED');
     const matches = data.matches || [];
 
     if (matches.length === 0) return { live: 0 };

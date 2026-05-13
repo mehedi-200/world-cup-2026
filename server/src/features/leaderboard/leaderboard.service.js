@@ -11,7 +11,7 @@ const getLeaderboard = async (page = 1, limit = 50) => {
 
   const [rows] = await db.query(
     `SELECT id, username, avatar_url, total_points,
-            RANK() OVER (ORDER BY total_points DESC) AS rank
+            RANK() OVER (ORDER BY total_points DESC) AS \`rank\`
      FROM users
      ORDER BY total_points DESC, username ASC
      LIMIT ? OFFSET ?`,
@@ -32,7 +32,7 @@ const getLeaderboard = async (page = 1, limit = 50) => {
 const getMyRank = async (userId) => {
   const [rows] = await db.query(
     `SELECT id, username, avatar_url, total_points,
-            (SELECT COUNT(*) + 1 FROM users u2 WHERE u2.total_points > u1.total_points) AS rank
+            (SELECT COUNT(*) + 1 FROM users u2 WHERE u2.total_points > u1.total_points) AS \`rank\`
      FROM users u1
      WHERE id = ?`,
     [userId]

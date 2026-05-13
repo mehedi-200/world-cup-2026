@@ -8,7 +8,17 @@ USE worldcup2026;
 -- -----------------------------------------
 INSERT INTO users (username, email, password_hash, avatar_url, total_points, role) VALUES
 ('admin', 'admin@worldcup2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 0, 'admin'),
-('testuser', 'testuser@worldcup2026.com', '$2a$10$Yx5EHWXh0B5RJXwFGWb5IuDdBVXeGGmGn4dIiGNGGPD1p0VnSJKYi', NULL, 0, 'user');
+('testuser', 'testuser@worldcup2026.com', '$2a$10$Yx5EHWXh0B5RJXwFGWb5IuDdBVXeGGmGn4dIiGNGGPD1p0VnSJKYi', NULL, 0, 'user'),
+('FootballKing', 'king@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 85, 'user'),
+('GoalMaster', 'goal@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 72, 'user'),
+('SoccerPro99', 'pro@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 68, 'user'),
+('WorldCupFan', 'fan@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 55, 'user'),
+('PredictorX', 'pred@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 50, 'user'),
+('MatchDay', 'match@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 43, 'user'),
+('TacticsGuru', 'tactics@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 38, 'user'),
+('FutbolLover', 'futbol@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 31, 'user'),
+('StadiumHero', 'stadium@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 25, 'user'),
+('CupChaser', 'cup@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 18, 'user');
 
 -- -----------------------------------------
 -- Groups (A through L for 48-team format)
@@ -244,8 +254,60 @@ INSERT INTO polls (title, description, is_active, expires_at) VALUES
 -- Poll Options (poll_id = 1)
 -- -----------------------------------------
 INSERT INTO poll_options (poll_id, option_text, vote_count, sort_order) VALUES
-(1, 'Brazil', 0, 1),
-(1, 'Argentina', 0, 2),
-(1, 'France', 0, 3),
-(1, 'England', 0, 4),
-(1, 'United States', 0, 5);
+(1, 'Brazil', 34, 1),
+(1, 'Argentina', 28, 2),
+(1, 'France', 22, 3),
+(1, 'England', 18, 4),
+(1, 'United States', 15, 5);
+
+-- -----------------------------------------
+-- Second Quiz
+-- -----------------------------------------
+INSERT INTO quizzes (title, description, difficulty, is_active) VALUES
+('World Cup Legends', 'How well do you know the greatest players in World Cup history?', 'hard', TRUE);
+
+INSERT INTO quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, points, sort_order) VALUES
+(2, 'Who scored the ''Hand of God'' goal in 1986?', 'Pele', 'Diego Maradona', 'Zinedine Zidane', 'Ronaldo', 'b', 10, 1),
+(2, 'Which player received a red card in the 2006 World Cup Final?', 'Thierry Henry', 'Marco Materazzi', 'Zinedine Zidane', 'Fabio Cannavaro', 'c', 10, 2),
+(2, 'Who is the youngest player to score in a World Cup Final?', 'Pele', 'Kylian Mbappe', 'Michael Owen', 'Lionel Messi', 'a', 10, 3),
+(2, 'Which goalkeeper saved the most penalties in World Cup history?', 'Gianluigi Buffon', 'Manuel Neuer', 'Harald Schumacher', 'Emiliano Martinez', 'd', 10, 4),
+(2, 'How many World Cup goals did Ronaldo (R9) score in total?', '12', '15', '18', '10', 'b', 10, 5);
+
+-- -----------------------------------------
+-- Second Poll
+-- -----------------------------------------
+INSERT INTO polls (title, description, is_active, expires_at) VALUES
+('Best Player of the Tournament?', 'Who do you think will be named the Golden Ball winner?', TRUE, '2026-07-19 00:00:00');
+
+INSERT INTO poll_options (poll_id, option_text, vote_count, sort_order) VALUES
+(2, 'Lionel Messi', 42, 1),
+(2, 'Kylian Mbappe', 38, 2),
+(2, 'Vinicius Jr', 25, 3),
+(2, 'Jude Bellingham', 20, 4),
+(2, 'Erling Haaland', 18, 5);
+
+-- -----------------------------------------
+-- Update Group Standings (reflect completed matches)
+-- -----------------------------------------
+
+-- Group A: USA beat COL 2-1, MEX beat NZL 3-0, USA 0-0 MEX
+UPDATE teams SET played=2, won=1, drawn=1, lost=0, goals_for=2, goals_against=1, goal_difference=1, points=4 WHERE code='USA';
+UPDATE teams SET played=2, won=1, drawn=1, lost=0, goals_for=3, goals_against=0, goal_difference=3, points=4 WHERE code='MEX';
+UPDATE teams SET played=1, won=0, drawn=0, lost=1, goals_for=1, goals_against=2, goal_difference=-1, points=0 WHERE code='COL';
+UPDATE teams SET played=1, won=0, drawn=0, lost=1, goals_for=0, goals_against=3, goal_difference=-3, points=0 WHERE code='NZL';
+
+-- Group B: ARG 1-1 EGY, CAN 4-0 UZB
+UPDATE teams SET played=1, won=1, drawn=0, lost=0, goals_for=4, goals_against=0, goal_difference=4, points=3 WHERE code='CAN';
+UPDATE teams SET played=1, won=0, drawn=1, lost=0, goals_for=1, goals_against=1, goal_difference=0, points=1 WHERE code='ARG';
+UPDATE teams SET played=1, won=0, drawn=1, lost=0, goals_for=1, goals_against=1, goal_difference=0, points=1 WHERE code='EGY';
+UPDATE teams SET played=1, won=0, drawn=0, lost=1, goals_for=0, goals_against=4, goal_difference=-4, points=0 WHERE code='UZB';
+
+-- -----------------------------------------
+-- Sample Predictions (for leaderboard users)
+-- -----------------------------------------
+INSERT INTO predictions (user_id, match_id, predicted_home_score, predicted_away_score, points_earned, is_scored) VALUES
+(4, 1, 2, 1, 10, 1), (4, 2, 3, 0, 10, 1), (4, 3, 1, 1, 10, 1), (4, 4, 3, 0, 5, 1), (4, 12, 0, 0, 10, 1),
+(5, 1, 2, 0, 5, 1), (5, 2, 2, 0, 5, 1), (5, 3, 2, 1, 3, 1), (5, 4, 4, 0, 10, 1), (5, 12, 1, 1, 5, 1),
+(6, 1, 1, 0, 3, 1), (6, 2, 3, 0, 10, 1), (6, 3, 0, 0, 5, 1), (6, 4, 3, 1, 3, 1), (6, 12, 0, 0, 10, 1),
+(7, 1, 3, 1, 5, 1), (7, 2, 2, 1, 3, 1), (7, 3, 1, 1, 10, 1), (7, 4, 2, 0, 3, 1), (7, 12, 1, 0, 3, 1),
+(8, 1, 2, 1, 10, 1), (8, 2, 1, 0, 3, 1), (8, 3, 2, 0, 3, 1), (8, 4, 4, 0, 10, 1), (8, 12, 0, 1, 0, 1);
