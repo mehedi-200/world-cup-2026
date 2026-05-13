@@ -2,7 +2,19 @@ const catchAsync = require('../../utils/catchAsync');
 const votingService = require('./voting.service');
 
 const getAll = catchAsync(async (req, res) => {
-  const polls = await votingService.getAll();
+  // Try to extract userId from token if present (optional auth)
+  let userId = null;
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const jwt = require('jsonwebtoken');
+      const env = require('../../config/env');
+      const decoded = jwt.verify(authHeader.split(' ')[1], env.jwt.secret);
+      userId = decoded.id;
+    }
+  } catch {}
+
+  const polls = await votingService.getAll(userId);
 
   res.json({
     status: 'success',

@@ -1,15 +1,25 @@
 const db = require('../../config/db');
 const AppError = require('../../utils/AppError');
 
-const getAll = async () => {
+const getAll = async (userId = null) => {
   const [rows] = await db.query(
-    `SELECT p.*, COUNT(po.id) AS option_count
-     FROM polls p
-     LEFT JOIN poll_options po ON p.id = po.poll_id
-     WHERE p.is_active = 1
-     GROUP BY p.id
-     ORDER BY p.created_at DESC`
+    'SELECT * FROM polls WHERE is_active = 1 ORDER BY created_at DESC'
   );
+
+  for (const poll of rows) {
+    const [options] = await db.query(
+      'SELECT * FROM poll_options WHERE poll_id = ? ORDER BY sort_order ASC, id ASC',
+      [poll.id]
+    );
+    poll.options = options;
+    poll.option_count = options.length;
+    if (userId) {
+      const [uv] = await db.query('SELECT option_id FROM votes WHERE user_id = ? AND poll_id = ?', [userId, poll.id]);
+      poll.user_vote = uv.length > 0 ? uv[0].option_id : null;
+    } else {
+      poll.user_vote = null;
+    }
+  }
 
   return rows;
 };
