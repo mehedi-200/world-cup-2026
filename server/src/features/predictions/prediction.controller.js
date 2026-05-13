@@ -56,4 +56,13 @@ const scoreMatch = catchAsync(async (req, res) => {
   });
 });
 
-module.exports = { getAll, create, update, getByMatch, scoreMatch };
+const scoreAll = catchAsync(async (req, res) => {
+  const result = await predictionService.scoreAllCompleted();
+
+  res.json({
+    status: 'success',
+    data: result,
+  });
+});
+
+module.exports = { getAll, create, update, getByMatch, scoreMatch, scoreAll };

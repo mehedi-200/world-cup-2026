@@ -12,6 +12,16 @@ import ProfilePage from '@/pages/ProfilePage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import { ProtectedRoute } from '@/features/auth';
+import AdminLayout from '@/features/admin/components/AdminLayout';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
+import AdminMatchesPage from '@/pages/admin/AdminMatchesPage';
+import AdminTeamsPage from '@/pages/admin/AdminTeamsPage';
+import AdminGroupsPage from '@/pages/admin/AdminGroupsPage';
+import AdminQuizzesPage from '@/pages/admin/AdminQuizzesPage';
+import AdminPollsPage from '@/pages/admin/AdminPollsPage';
+import AdminUsersPage from '@/pages/admin/AdminUsersPage';
+import AdminPredictionsPage from '@/pages/admin/AdminPredictionsPage';
 
 export default function AppRoutes() {
   return (
@@ -28,6 +38,19 @@ export default function AppRoutes() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+
+      {/* Admin routes */}
+      <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
+        <Route index element={<AdminDashboardPage />} />
+        <Route path="matches" element={<AdminMatchesPage />} />
+        <Route path="teams" element={<AdminTeamsPage />} />
+        <Route path="groups" element={<AdminGroupsPage />} />
+        <Route path="quizzes" element={<AdminQuizzesPage />} />
+        <Route path="polls" element={<AdminPollsPage />} />
+        <Route path="users" element={<AdminUsersPage />} />
+        <Route path="predictions" element={<AdminPredictionsPage />} />
+      </Route>
+
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

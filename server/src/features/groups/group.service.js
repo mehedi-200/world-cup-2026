@@ -56,4 +56,40 @@ const getById = async (id) => {
   return group;
 };
 
-module.exports = { getAll, getById };
+const create = async (name) => {
+  const [result] = await db.query(
+    'INSERT INTO `groups` (name) VALUES (?)',
+    [name]
+  );
+
+  const [rows] = await db.query('SELECT * FROM `groups` WHERE id = ?', [result.insertId]);
+  return rows[0];
+};
+
+const update = async (id, name) => {
+  const [existing] = await db.query('SELECT * FROM `groups` WHERE id = ?', [id]);
+  if (existing.length === 0) {
+    throw new AppError('Group not found', 404);
+  }
+
+  await db.query('UPDATE `groups` SET name = ? WHERE id = ?', [name, id]);
+
+  const [rows] = await db.query('SELECT * FROM `groups` WHERE id = ?', [id]);
+  return rows[0];
+};
+
+const deleteGroup = async (id) => {
+  const [existing] = await db.query('SELECT * FROM `groups` WHERE id = ?', [id]);
+  if (existing.length === 0) {
+    throw new AppError('Group not found', 404);
+  }
+
+  const [teams] = await db.query('SELECT COUNT(*) AS count FROM teams WHERE group_id = ?', [id]);
+  if (teams[0].count > 0) {
+    throw new AppError('Cannot delete group with existing teams', 400);
+  }
+
+  await db.query('DELETE FROM `groups` WHERE id = ?', [id]);
+};
+
+module.exports = { getAll, getById, create, update, delete: deleteGroup };

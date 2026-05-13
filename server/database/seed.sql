@@ -7,18 +7,18 @@ USE worldcup2026;
 -- Users (2 sample users)
 -- -----------------------------------------
 INSERT INTO users (username, email, password_hash, avatar_url, total_points, role) VALUES
-('admin', 'admin@worldcup2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 0, 'admin'),
+('admin', 'admin@worldcup2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'admin'),
 ('testuser', 'testuser@worldcup2026.com', '$2a$10$Yx5EHWXh0B5RJXwFGWb5IuDdBVXeGGmGn4dIiGNGGPD1p0VnSJKYi', NULL, 0, 'user'),
-('FootballKing', 'king@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 85, 'user'),
-('GoalMaster', 'goal@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 72, 'user'),
-('SoccerPro99', 'pro@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 68, 'user'),
-('WorldCupFan', 'fan@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 55, 'user'),
-('PredictorX', 'pred@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 50, 'user'),
-('MatchDay', 'match@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 43, 'user'),
-('TacticsGuru', 'tactics@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 38, 'user'),
-('FutbolLover', 'futbol@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 31, 'user'),
-('StadiumHero', 'stadium@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 25, 'user'),
-('CupChaser', 'cup@wc2026.com', '$2a$10$xPPMnR1aBbKNfxqp6sTMYOJSKMvGrNOOFmFHPLDBqMp2PeAeBuN2S', NULL, 18, 'user');
+('FootballKing', 'king@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 85, 'user'),
+('GoalMaster', 'goal@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 72, 'user'),
+('SoccerPro99', 'pro@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 68, 'user'),
+('WorldCupFan', 'fan@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 55, 'user'),
+('PredictorX', 'pred@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 50, 'user'),
+('MatchDay', 'match@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 43, 'user'),
+('TacticsGuru', 'tactics@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 38, 'user'),
+('FutbolLover', 'futbol@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 31, 'user'),
+('StadiumHero', 'stadium@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 25, 'user'),
+('CupChaser', 'cup@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 18, 'user');
 
 -- -----------------------------------------
 -- Groups (A through L for 48-team format)

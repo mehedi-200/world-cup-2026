@@ -11,4 +11,24 @@ const castVote = [
   validate,
 ];
 
-module.exports = { castVote };
+const createPoll = [
+  body('title')
+    .trim()
+    .notEmpty()
+    .withMessage('Poll title is required'),
+  body('options')
+    .optional()
+    .isArray()
+    .withMessage('Options must be an array'),
+  validate,
+];
+
+const createOption = [
+  body('option_text')
+    .trim()
+    .notEmpty()
+    .withMessage('Option text is required'),
+  validate,
+];
+
+module.exports = { castVote, createPoll, createOption };

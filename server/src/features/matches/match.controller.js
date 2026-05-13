@@ -103,4 +103,13 @@ const syncCompetition = catchAsync(async (req, res) => {
   res.json({ status: 'success', data: result });
 });
 
-module.exports = { getAll, getById, getLive, create, update, addEvent, syncToday, syncByDate, syncCompetition };
+const deleteMatch = catchAsync(async (req, res) => {
+  await matchService.deleteMatch(req.params.id);
+
+  res.json({
+    status: 'success',
+    message: 'Match deleted successfully',
+  });
+});
+
+module.exports = { getAll, getById, getLive, create, update, addEvent, syncToday, syncByDate, syncCompetition, deleteMatch };

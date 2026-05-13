@@ -164,4 +164,17 @@ const addEvent = async (matchId, data) => {
   return rows[0];
 };
 
-module.exports = { getAll, getById, getLive, create, update, addEvent };
+const deleteMatch = async (id) => {
+  const [matches] = await db.query('SELECT id FROM matches WHERE id = ?', [id]);
+  if (matches.length === 0) {
+    throw new AppError('Match not found', 404);
+  }
+
+  await db.query('DELETE FROM match_events WHERE match_id = ?', [id]);
+  await db.query('DELETE FROM predictions WHERE match_id = ?', [id]);
+  await db.query('DELETE FROM matches WHERE id = ?', [id]);
+
+  return { id };
+};
+
+module.exports = { getAll, getById, getLive, create, update, addEvent, deleteMatch };

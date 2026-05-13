@@ -12,6 +12,7 @@ router.get('/sync/competition/:competitionId', matchController.syncCompetition);
 router.get('/:id', matchController.getById);
 router.post('/', auth, adminOnly, matchValidation.createMatch, matchController.create);
 router.put('/:id', auth, adminOnly, matchController.update);
+router.delete('/:id', auth, adminOnly, matchController.deleteMatch);
 router.post('/:id/events', auth, adminOnly, matchValidation.createEvent, matchController.addEvent);
 
 module.exports = router;

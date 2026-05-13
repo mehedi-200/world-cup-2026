@@ -13,6 +13,7 @@ const predictionRoutes = require('./features/predictions/prediction.routes');
 const leaderboardRoutes = require('./features/leaderboard/leaderboard.routes');
 const quizRoutes = require('./features/quiz/quiz.routes');
 const votingRoutes = require('./features/voting/voting.routes');
+const adminRoutes = require('./features/admin/admin.routes');
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/predictions', predictionRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/polls', votingRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 handler
 app.all('*', (req, res, next) => {

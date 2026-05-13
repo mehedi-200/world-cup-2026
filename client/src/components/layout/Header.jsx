@@ -56,6 +56,11 @@ const Header = () => {
                   {user?.username?.charAt(0) || 'U'}
                 </div>
                 <span className="text-sm text-gray-300">{user?.username}</span>
+                {user?.role === 'admin' && (
+                  <NavLink to="/admin" className="text-sm text-fifa-gold hover:text-yellow-300 font-medium transition-colors">
+                    Admin
+                  </NavLink>
+                )}
                 <button
                   onClick={logout}
                   className="text-sm text-gray-400 hover:text-white transition-colors"

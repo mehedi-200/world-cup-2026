@@ -197,10 +197,49 @@ const scorePrediction = (prediction, match) => {
   return 0;
 };
 
+const scoreAllCompleted = async () => {
+  const scorePredictionUtil = require('../../utils/scorePrediction');
+
+  const [completedMatches] = await db.query(
+    "SELECT * FROM matches WHERE status = 'completed'"
+  );
+
+  let totalScored = 0;
+
+  for (const match of completedMatches) {
+    const [predictions] = await db.query(
+      'SELECT * FROM predictions WHERE match_id = ? AND is_scored = 0',
+      [match.id]
+    );
+
+    for (const prediction of predictions) {
+      const points = scorePredictionUtil(
+        { home_score: prediction.predicted_home_score, away_score: prediction.predicted_away_score },
+        { home_score: match.home_score, away_score: match.away_score }
+      );
+
+      await db.query(
+        'UPDATE predictions SET points_earned = ?, is_scored = 1 WHERE id = ?',
+        [points, prediction.id]
+      );
+
+      await db.query(
+        'UPDATE users SET total_points = total_points + ? WHERE id = ?',
+        [points, prediction.user_id]
+      );
+
+      totalScored++;
+    }
+  }
+
+  return { scored: totalScored };
+};
+
 module.exports = {
   getUserPredictions,
   createPrediction,
   updatePrediction,
   getByMatch,
   scorePredictions,
+  scoreAllCompleted,
 };
