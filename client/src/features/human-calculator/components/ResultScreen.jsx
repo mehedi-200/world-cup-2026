@@ -32,7 +32,7 @@ export default function ResultScreen({ result, onReplay, onShare }) {
 
   const handleShare = async () => {
     const shareData = {
-      title: 'Human Calculator Result',
+      title: 'Human Calculatore Result',
       text: result.shareText,
     };
 

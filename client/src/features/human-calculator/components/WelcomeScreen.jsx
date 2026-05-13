@@ -21,7 +21,7 @@ export default function WelcomeScreen({ onStart }) {
       >
         {/* Title */}
         <h1 className="text-5xl md:text-6xl font-black mb-2 animate-neon-pulse text-gradient">
-          Human Calculator
+          Human Calculatore
         </h1>
 
         {/* Subtitle */}

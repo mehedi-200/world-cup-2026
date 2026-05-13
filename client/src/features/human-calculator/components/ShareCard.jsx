@@ -43,7 +43,7 @@ export default function ShareCard({ result }) {
             marginBottom: 8,
           }}
         >
-          Human Calculator
+          Human Calculatore
         </p>
 
         {/* User name */}
