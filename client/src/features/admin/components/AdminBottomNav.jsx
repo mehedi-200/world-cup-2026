@@ -9,11 +9,11 @@ const primaryTabs = [
 ];
 
 const moreItems = [
-  { to: '/admin/teams', label: 'Teams', icon: 'M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9', iconBg: 'bg-blue-500/15', iconColor: 'text-blue-400' },
-  { to: '/admin/groups', label: 'Groups', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', iconBg: 'bg-purple-500/15', iconColor: 'text-purple-400' },
-  { to: '/admin/polls', label: 'Polls', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', iconBg: 'bg-green-500/15', iconColor: 'text-green-400' },
-  { to: '/admin/predictions', label: 'Scores', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', iconBg: 'bg-orange-500/15', iconColor: 'text-orange-400' },
-  { to: '/', label: 'Site', icon: 'M10 19l-7-7m0 0l7-7m-7 7h18', iconBg: 'bg-gray-500/15', iconColor: 'text-gray-400' },
+  { to: '/admin/teams', label: 'Teams', icon: 'M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9', bg: 'bg-[#007AFF]' },
+  { to: '/admin/groups', label: 'Groups', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', bg: 'bg-[#AF52DE]' },
+  { to: '/admin/polls', label: 'Polls', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', bg: 'bg-[#34C759]' },
+  { to: '/admin/predictions', label: 'Scores', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', bg: 'bg-[#FF9500]' },
+  { to: '/', label: 'Back', icon: 'M10 19l-7-7m0 0l7-7m-7 7h18', bg: 'bg-[#8E8E93]' },
 ];
 
 export default function AdminBottomNav() {
@@ -25,31 +25,25 @@ export default function AdminBottomNav() {
 
   return (
     <>
-      {/* More menu */}
       {showMore && (
         <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)}>
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute bottom-[68px] left-3 right-3 animate-slide-up" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-fifa-darker/95 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-2.5 shadow-xl">
-              <div className="grid grid-cols-5 gap-2">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+          <div className="absolute bottom-[72px] left-2 right-2 animate-slide-up" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[#1c1c1e]/95 backdrop-blur-2xl rounded-[18px] overflow-hidden shadow-2xl">
+              {/* Handle */}
+              <div className="flex justify-center pt-2.5 pb-1">
+                <div className="w-9 h-[5px] rounded-full bg-white/20" />
+              </div>
+              {/* Grid */}
+              <div className="grid grid-cols-5 gap-y-4 px-3 pt-2 pb-5">
                 {moreItems.map((item) => (
-                  <button
-                    key={item.to}
-                    onClick={() => goTo(item.to)}
-                    className={`flex flex-col items-center gap-1.5 py-3 px-1 rounded-xl active:scale-90 transition-all duration-150 ${
-                      location.pathname === item.to
-                        ? 'bg-fifa-gold/10 ring-1 ring-fifa-gold/25'
-                        : 'active:bg-white/[0.06]'
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-xl ${item.iconBg} flex items-center justify-center`}>
-                      <svg className={`w-5 h-5 ${location.pathname === item.to ? 'text-fifa-gold' : item.iconColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <button key={item.to} onClick={() => goTo(item.to)} className="flex flex-col items-center gap-[6px] active:opacity-60 transition-opacity">
+                    <div className={`w-[50px] h-[50px] ${item.bg} rounded-[13px] flex items-center justify-center shadow-sm`}>
+                      <svg className="w-[22px] h-[22px] text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                         <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                       </svg>
                     </div>
-                    <span className={`text-[10px] font-medium leading-none ${
-                      location.pathname === item.to ? 'text-fifa-gold' : 'text-gray-400'
-                    }`}>{item.label}</span>
+                    <span className="text-[11px] text-[#ebebf0] leading-none">{item.label}</span>
                   </button>
                 ))}
               </div>
@@ -58,29 +52,26 @@ export default function AdminBottomNav() {
         </div>
       )}
 
-      {/* Bottom nav bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-bottom">
-        <div className="h-px bg-gradient-to-r from-transparent via-fifa-gold/20 to-transparent" />
-        <div className="h-16 bg-fifa-darker/95 backdrop-blur-xl">
-          <div className="flex items-center justify-around h-full px-2">
+        <div className="h-[50px] bg-[#1c1c1e]/90 backdrop-blur-2xl border-t border-white/[0.08]">
+          <div className="flex items-center justify-around h-full">
             {primaryTabs.map((tab) => (
               <NavLink
                 key={tab.to}
                 to={tab.to}
                 end={tab.end}
                 className={({ isActive }) =>
-                  `relative flex flex-col items-center justify-center gap-1 min-w-[52px] min-h-[44px] transition-all duration-200 ${
-                    isActive ? 'text-fifa-gold' : 'text-gray-500 active:text-gray-300'
+                  `flex flex-col items-center justify-center gap-[2px] min-w-[50px] min-h-[44px] ${
+                    isActive ? 'text-[#0A84FF]' : 'text-[#8e8e93]'
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    {isActive && <span className="absolute -top-1.5 w-1 h-1 rounded-full bg-fifa-gold shadow-[0_0_6px_rgba(212,175,55,0.6)]" />}
-                    <svg className="w-6 h-6" fill={isActive ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive ? 0 : 1.5}>
+                    <svg className="w-[22px] h-[22px]" fill={isActive ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive ? 0 : 1.6}>
                       <path strokeLinecap="round" strokeLinejoin="round" d={tab.icon} />
                     </svg>
-                    <span className={`text-[10px] leading-none ${isActive ? 'font-bold' : 'font-medium'}`}>{tab.label}</span>
+                    <span className="text-[10px]" style={{ fontWeight: isActive ? 600 : 400 }}>{tab.label}</span>
                   </>
                 )}
               </NavLink>
@@ -88,17 +79,16 @@ export default function AdminBottomNav() {
 
             <button
               onClick={() => setShowMore(!showMore)}
-              className={`relative flex flex-col items-center justify-center gap-1 min-w-[52px] min-h-[44px] transition-all duration-200 ${
-                showMore ? 'text-fifa-gold' : 'text-gray-500 active:text-gray-300'
+              className={`flex flex-col items-center justify-center gap-[2px] min-w-[50px] min-h-[44px] ${
+                showMore ? 'text-[#0A84FF]' : 'text-[#8e8e93]'
               }`}
             >
-              {showMore && <span className="absolute -top-1.5 w-1 h-1 rounded-full bg-fifa-gold shadow-[0_0_6px_rgba(212,175,55,0.6)]" />}
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <circle cx="12" cy="5" r="1" fill="currentColor" />
-                <circle cx="12" cy="12" r="1" fill="currentColor" />
-                <circle cx="12" cy="19" r="1" fill="currentColor" />
+              <svg className="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none" />
+                <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+                <circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none" />
               </svg>
-              <span className={`text-[10px] leading-none ${showMore ? 'font-bold' : 'font-medium'}`}>More</span>
+              <span className="text-[10px]" style={{ fontWeight: showMore ? 600 : 400 }}>More</span>
             </button>
           </div>
         </div>
