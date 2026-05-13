@@ -12,6 +12,7 @@ import ProfilePage from '@/pages/ProfilePage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import HumanCalculatorPage from '@/pages/HumanCalculatorPage';
 import { ProtectedRoute } from '@/features/auth';
 import AdminLayout from '@/features/admin/components/AdminLayout';
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
@@ -35,6 +36,7 @@ export default function AppRoutes() {
       <Route path="/quizzes" element={<QuizPage />} />
       <Route path="/quizzes/:id" element={<QuizPlayPage />} />
       <Route path="/polls" element={<VotingPage />} />
+      <Route path="/human-calculator" element={<HumanCalculatorPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

@@ -10,6 +10,7 @@ const navLinks = [
   { to: '/leaderboard', label: 'Leaderboard' },
   { to: '/quizzes', label: 'Quiz' },
   { to: '/polls', label: 'Polls' },
+  { to: '/human-calculator', label: '🧮 Calculator' },
 ];
 
 const Header = () => {
