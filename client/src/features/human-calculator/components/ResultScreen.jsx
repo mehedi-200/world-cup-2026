@@ -160,38 +160,28 @@ export default function ResultScreen({ result, onReplay, onShare }) {
           </p>
 
           {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Replay */}
+          <div className="space-y-2.5">
             <button
               onClick={onReplay}
-              className="flex-1 py-3 px-4 rounded-xl text-sm font-semibold
-                         bg-white/[0.06] border border-white/10 text-white
-                         hover:bg-white/[0.1] transition-all duration-300"
+              className="w-full py-3.5 rounded-2xl text-base font-bold bg-gradient-to-r from-fifa-gold to-yellow-500 text-[#1a1a2e] shadow-[0_4px_20px_rgba(212,175,55,0.3)] active:scale-[0.97] transition-all duration-200"
             >
               🔄 আবার চেষ্টা করুন
             </button>
-
-            {/* Share */}
-            <button
-              onClick={handleShare}
-              className="flex-1 py-3 px-4 rounded-xl text-sm font-semibold
-                         bg-fifa-maroon/80 border border-fifa-maroon text-white
-                         hover:bg-fifa-maroon transition-all duration-300"
-            >
-              📤 শেয়ার করুন
-            </button>
-
-            {/* Download */}
-            <button
-              onClick={handleDownload}
-              disabled={isDownloading}
-              className="flex-1 py-3 px-4 rounded-xl text-sm font-semibold
-                         bg-gradient-to-r from-fifa-gold to-yellow-600 text-fifa-darker
-                         hover:from-yellow-500 hover:to-fifa-gold
-                         disabled:opacity-50 transition-all duration-300 glow-gold"
-            >
-              {isDownloading ? '⏳ তৈরি হচ্ছে...' : '📥 ডাউনলোড'}
-            </button>
+            <div className="flex gap-2.5">
+              <button
+                onClick={handleShare}
+                className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] active:bg-white/[0.1] transition-all duration-200"
+              >
+                📤 শেয়ার
+              </button>
+              <button
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] active:bg-white/[0.1] disabled:opacity-50 transition-all duration-200"
+              >
+                {isDownloading ? '⏳...' : '📥 ডাউনলোড'}
+              </button>
+            </div>
           </div>
         </div>
       </div>

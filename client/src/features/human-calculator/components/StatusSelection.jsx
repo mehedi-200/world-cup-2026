@@ -12,21 +12,15 @@ export default function StatusSelection({ name, onSubmit }) {
     });
   };
 
-  const handleSubmit = () => {
-    if (selected.length > 0) onSubmit(selected);
-  };
-
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in min-h-screen flex flex-col">
       {/* Scrollable content */}
-      <div className="max-w-2xl mx-auto px-4 pt-6 pb-28">
-        {/* Header */}
+      <div className="flex-1 max-w-2xl mx-auto w-full px-4 pt-6 pb-32">
         <h2 className="text-lg md:text-xl font-bold text-center text-white mb-1">
-          <span className="text-fifa-gold">{name}</span>, আপনার বর্তমান জীবনের অবস্থা নির্বাচন করুন
+          <span className="text-fifa-gold">{name}</span>, আপনার অবস্থা নির্বাচন করুন
         </h2>
-        <p className="text-center text-gray-500 mb-6 text-xs">সর্বোচ্চ ২টি নির্বাচন করুন</p>
+        <p className="text-center text-gray-500 mb-5 text-xs">সর্বোচ্চ ২টি নির্বাচন করুন</p>
 
-        {/* Status Grid */}
         <div className="grid grid-cols-3 md:grid-cols-4 gap-2.5">
           {statuses.map((status) => {
             const isSelected = selected.includes(status.id);
@@ -55,27 +49,32 @@ export default function StatusSelection({ name, onSubmit }) {
         </div>
       </div>
 
-      {/* Fixed bottom button — always visible */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-fifa-dark via-fifa-dark/95 to-transparent">
-        <div className="max-w-2xl mx-auto">
-          <button
-            onClick={handleSubmit}
-            disabled={selected.length === 0}
-            className={`w-full py-4 rounded-2xl text-lg font-bold transition-all duration-300 active:scale-[0.97] ${
-              selected.length > 0
-                ? 'bg-gradient-to-r from-fifa-gold to-yellow-500 text-fifa-darker shadow-lg shadow-fifa-gold/20'
-                : 'bg-white/[0.06] text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            {selected.length === 0
-              ? '👆 Select your status'
-              : selected.length === 1
-                ? '🧮 Calculate My Life (or pick one more)'
-                : '🧮 Calculate My Life'}
-          </button>
-          {selected.length > 0 && (
-            <p className="text-center text-gray-500 text-[10px] mt-1.5">{selected.length}/2 selected</p>
-          )}
+      {/* Fixed solid bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-40">
+        <div className="bg-[#1a1a2e] border-t border-white/[0.06] px-4 py-3 safe-bottom">
+          <div className="max-w-2xl mx-auto">
+            {selected.length > 0 && (
+              <div className="flex items-center justify-center gap-1.5 mb-2">
+                {[0, 1].map((i) => (
+                  <div key={i} className={`w-2 h-2 rounded-full transition-all ${i < selected.length ? 'bg-fifa-gold' : 'bg-white/10'}`} />
+                ))}
+                <span className="text-[10px] text-gray-500 ml-1">{selected.length}/2</span>
+              </div>
+            )}
+            <button
+              onClick={() => selected.length > 0 && onSubmit(selected)}
+              disabled={selected.length === 0}
+              className={`w-full py-3.5 rounded-2xl text-base font-bold transition-all duration-200 active:scale-[0.97] ${
+                selected.length > 0
+                  ? 'bg-gradient-to-r from-fifa-gold to-yellow-500 text-[#1a1a2e] shadow-[0_4px_20px_rgba(212,175,55,0.3)]'
+                  : 'bg-white/[0.04] text-gray-600 border border-white/[0.06]'
+              }`}
+            >
+              {selected.length === 0 && '👆 Select your status'}
+              {selected.length === 1 && '🧮 Calculate (or pick 1 more)'}
+              {selected.length === 2 && '🧮 Calculate My Life'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
