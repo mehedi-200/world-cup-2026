@@ -58,7 +58,7 @@ const Header = () => {
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <div className="flex items-center gap-3">
-                {user?.role === 'admin' && (
+                {user?.is_admin === 1 && (
                   <Link to="/admin" className="text-xs font-semibold text-fifa-gold bg-fifa-gold/10 hover:bg-fifa-gold/20 px-3 py-1.5 rounded-lg transition-colors">
                     Admin
                   </Link>
@@ -88,7 +88,7 @@ const Header = () => {
           <div className="flex md:hidden items-center gap-2">
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
-                {user?.role === 'admin' && (
+                {user?.is_admin === 1 && (
                   <Link to="/admin" className="text-[10px] font-bold text-fifa-gold bg-fifa-gold/10 px-2 py-1 rounded-md">
                     ADMIN
                   </Link>

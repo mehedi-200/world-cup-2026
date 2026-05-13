@@ -153,8 +153,8 @@ export default function AdminUsersPage() {
           <span className="text-white font-semibold">{row.username}</span>
           <p className="text-gray-400 text-sm">{row.email}</p>
         </div>
-        <Badge variant={row.role === 'admin' ? 'warning' : 'neutral'} size="sm">
-          {row.role || 'user'}
+        <Badge variant={row.is_admin === 1 ? 'gold' : 'neutral'} size="sm">
+          {row.is_admin === 1 ? 'Admin' : 'User'}
         </Badge>
       </div>
       <div className="flex gap-3 text-sm text-gray-400">

@@ -108,7 +108,7 @@ const getUsers = async ({ page = 1, limit = 20, search, role } = {}) => {
   );
 
   const [rows] = await db.query(
-    `SELECT u.id, u.username, u.email, u.avatar_url, u.total_points, u.role, u.created_at,
+    `SELECT u.id, u.username, u.email, u.avatar_url, u.total_points, u.role, u.is_admin, u.created_at,
             (SELECT COUNT(*) FROM predictions WHERE user_id = u.id) AS predictions_count,
             (SELECT COUNT(*) FROM quiz_attempts WHERE user_id = u.id) AS quiz_attempts_count
      FROM users u
@@ -128,10 +128,11 @@ const updateUserRole = async (userId, role) => {
   const [users] = await db.query('SELECT id, role FROM users WHERE id = ?', [userId]);
   if (!users.length) throw new AppError('User not found', 404);
 
-  await db.query('UPDATE users SET role = ? WHERE id = ?', [role, userId]);
+  const isAdmin = role === 'admin' ? 1 : 0;
+  await db.query('UPDATE users SET role = ?, is_admin = ? WHERE id = ?', [role, isAdmin, userId]);
 
   const [updated] = await db.query(
-    'SELECT id, username, email, avatar_url, total_points, role, created_at FROM users WHERE id = ?',
+    'SELECT id, username, email, avatar_url, total_points, role, is_admin, created_at FROM users WHERE id = ?',
     [userId]
   );
   return updated[0];

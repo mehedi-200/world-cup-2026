@@ -17,18 +17,18 @@ const register = async ({ username, email, password }) => {
   const password_hash = await bcrypt.hash(password, 12);
 
   const [result] = await db.query(
-    'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
+    'INSERT INTO users (username, email, password_hash, is_admin) VALUES (?, ?, ?, 0)',
     [username, email, password_hash]
   );
 
   const [rows] = await db.query(
-    'SELECT id, username, email, avatar_url, role, total_points, created_at FROM users WHERE id = ?',
+    'SELECT id, username, email, avatar_url, role, is_admin, total_points, created_at FROM users WHERE id = ?',
     [result.insertId]
   );
 
   const newUser = rows[0];
   const token = jwt.sign(
-    { id: newUser.id, role: newUser.role },
+    { id: newUser.id, role: newUser.role, is_admin: newUser.is_admin },
     env.jwt.secret,
     { expiresIn: env.jwt.expiresIn }
   );
@@ -54,7 +54,7 @@ const login = async (email, password) => {
   }
 
   const token = jwt.sign(
-    { id: user.id, role: user.role },
+    { id: user.id, role: user.role, is_admin: user.is_admin },
     env.jwt.secret,
     { expiresIn: env.jwt.expiresIn }
   );
@@ -66,7 +66,7 @@ const login = async (email, password) => {
 
 const getProfile = async (userId) => {
   const [rows] = await db.query(
-    'SELECT id, username, email, avatar_url, role, total_points, created_at FROM users WHERE id = ?',
+    'SELECT id, username, email, avatar_url, role, is_admin, total_points, created_at FROM users WHERE id = ?',
     [userId]
   );
 

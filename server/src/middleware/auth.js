@@ -11,7 +11,7 @@ const auth = catchAsync(async (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
   const decoded = jwt.verify(token, env.jwt.secret);
-  req.user = { id: decoded.id, role: decoded.role };
+  req.user = { id: decoded.id, role: decoded.role, is_admin: decoded.is_admin };
   next();
 });
 

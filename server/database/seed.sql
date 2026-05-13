@@ -8,9 +8,9 @@ USE worldcup2026;
 -- -----------------------------------------
 -- Users (admin + sample users, password: password123)
 -- -----------------------------------------
-INSERT INTO users (username, email, password_hash, avatar_url, total_points, role) VALUES
-('admin', 'admin@worldcup2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'admin'),
-('testuser', 'testuser@worldcup2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'user'),
+INSERT INTO users (username, email, password_hash, avatar_url, total_points, role, is_admin) VALUES
+('admin', 'admin@worldcup2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'admin', 1),
+('testuser', 'testuser@worldcup2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'user', 0),
 ('FootballKing', 'king@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'user'),
 ('GoalMaster', 'goal@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'user'),
 ('SoccerPro99', 'pro@wc2026.com', '$2a$10$BTlh3sIYA2qXU6MIM3MOreGqsPZJApZCsXXOaA.O6rpAYxt4/eP0W', NULL, 0, 'user'),
