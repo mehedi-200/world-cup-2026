@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 const primaryTabs = [
   { to: '/admin', label: 'Home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', end: true },
@@ -19,54 +19,84 @@ const moreItems = [
 export default function AdminBottomNav() {
   const [showMore, setShowMore] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const goTo = (path) => { navigate(path); setShowMore(false); };
 
   return (
     <>
+      {/* More menu */}
       {showMore && (
         <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)}>
           <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute bottom-16 left-0 right-0 bg-fifa-darker border-t border-white/10 rounded-t-2xl p-4 space-y-1">
-            {moreItems.map((item) => (
-              <button
-                key={item.to}
-                onClick={() => { navigate(item.to); setShowMore(false); }}
-                className="w-full text-left px-4 py-3 text-gray-200 hover:bg-white/10 rounded-lg transition-colors text-sm font-medium"
-              >
-                {item.label}
-              </button>
-            ))}
+          <div className="absolute bottom-[68px] left-3 right-3 animate-slide-up" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-fifa-darker border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+              {moreItems.map((item, i) => (
+                <button
+                  key={item.to}
+                  onClick={() => goTo(item.to)}
+                  className={`w-full text-left px-5 py-3.5 text-sm transition-colors ${
+                    i < moreItems.length - 1 ? 'border-b border-white/[0.05]' : ''
+                  } ${
+                    location.pathname === item.to
+                      ? 'text-fifa-gold bg-fifa-gold/[0.06]'
+                      : item.to === '/'
+                        ? 'text-gray-400 active:bg-white/[0.06]'
+                        : 'text-gray-200 active:bg-white/[0.06]'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-fifa-darker/95 backdrop-blur-lg border-t border-white/10 z-50 lg:hidden">
-        <div className="flex items-center justify-around h-full px-2">
-          {primaryTabs.map((tab) => (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              end={tab.end}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-0.5 min-w-[44px] min-h-[44px] ${
-                  isActive ? 'text-fifa-gold' : 'text-gray-500'
-                }`
-              }
+      {/* Bottom nav bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-bottom">
+        <div className="h-px bg-gradient-to-r from-transparent via-fifa-gold/20 to-transparent" />
+        <div className="h-16 bg-fifa-darker/95 backdrop-blur-xl">
+          <div className="flex items-center justify-around h-full px-2">
+            {primaryTabs.map((tab) => (
+              <NavLink
+                key={tab.to}
+                to={tab.to}
+                end={tab.end}
+                className={({ isActive }) =>
+                  `relative flex flex-col items-center justify-center gap-1 min-w-[52px] min-h-[44px] transition-all duration-200 ${
+                    isActive ? 'text-fifa-gold' : 'text-gray-500 active:text-gray-300'
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {isActive && <span className="absolute -top-1.5 w-1 h-1 rounded-full bg-fifa-gold shadow-[0_0_6px_rgba(212,175,55,0.6)]" />}
+                    <svg className="w-6 h-6" fill={isActive ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive ? 0 : 1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d={tab.icon} />
+                    </svg>
+                    <span className={`text-[10px] leading-none ${isActive ? 'font-bold' : 'font-medium'}`}>{tab.label}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
+
+            {/* More tab */}
+            <button
+              onClick={() => setShowMore(!showMore)}
+              className={`relative flex flex-col items-center justify-center gap-1 min-w-[52px] min-h-[44px] transition-all duration-200 ${
+                showMore ? 'text-fifa-gold' : 'text-gray-500 active:text-gray-300'
+              }`}
             >
+              {showMore && <span className="absolute -top-1.5 w-1 h-1 rounded-full bg-fifa-gold shadow-[0_0_6px_rgba(212,175,55,0.6)]" />}
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d={tab.icon} />
+                <circle cx="12" cy="5" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="19" r="1" fill="currentColor" />
               </svg>
-              <span className="text-[10px] font-medium">{tab.label}</span>
-            </NavLink>
-          ))}
-          <button
-            onClick={() => setShowMore(!showMore)}
-            className={`flex flex-col items-center justify-center gap-0.5 min-w-[44px] min-h-[44px] ${showMore ? 'text-fifa-gold' : 'text-gray-500'}`}
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-            </svg>
-            <span className="text-[10px] font-medium">More</span>
-          </button>
+              <span className={`text-[10px] leading-none ${showMore ? 'font-bold' : 'font-medium'}`}>More</span>
+            </button>
+          </div>
         </div>
       </nav>
     </>
