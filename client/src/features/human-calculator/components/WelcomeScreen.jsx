@@ -14,20 +14,20 @@ export default function WelcomeScreen({ onStart }) {
       <ParticleBackground />
 
       <form onSubmit={handleSubmit} className="relative z-10 max-w-sm w-full mx-auto text-center animate-fade-in">
-        <div className="text-6xl mb-4">🧮</div>
+        <div className="text-6xl mb-4">🎬</div>
 
         <h1 className="text-4xl md:text-5xl font-black mb-2 animate-neon-pulse text-gradient leading-tight">
-          Human Calculatore
+          Human Calculator
         </h1>
 
-        <p className="text-sm text-gray-400 mb-1 tracking-wide">AI-Powered Life Status Analyzer</p>
-        <p className="text-sm text-fifa-gold/70 mb-8 font-medium">স্যার, আপনার নামটি লিখুন।</p>
+        <p className="text-sm text-gray-400 mb-1 tracking-wide">AI-Powered Cinematic Life Roaster</p>
+        <p className="text-sm text-fifa-gold/70 mb-8 font-medium">তোর নাম লিখ, বাকিটা আমরা দেখি।</p>
 
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="আপনার নাম লিখুন..."
+          placeholder="তোর নাম লিখ..."
           className="w-full px-5 py-4 rounded-2xl bg-white/[0.05] border border-white/[0.08] text-white text-lg text-center placeholder-gray-600 focus:outline-none focus:border-fifa-gold/40 focus:ring-2 focus:ring-fifa-gold/20 transition-all duration-300 mb-4"
           autoFocus
         />
@@ -41,10 +41,10 @@ export default function WelcomeScreen({ onStart }) {
               : 'bg-white/[0.04] text-gray-600 border border-white/[0.06] cursor-not-allowed'
           }`}
         >
-          🚀 বিশ্লেষণ শুরু করুন
+          🎬 শুরু করো
         </button>
 
-        <p className="mt-6 text-[10px] text-gray-600">100% accurate* (*not really)</p>
+        <p className="mt-6 text-[10px] text-gray-600">A Netflix trailer for your life choices</p>
       </form>
     </div>
   );

@@ -18,6 +18,7 @@ module.exports = {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   },
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+  openaiApiKey: process.env.OPENAI_API_KEY || '',
   footballApi: {
     key: process.env.FOOTBALL_API_KEY || '',
     url: process.env.FOOTBALL_API_URL || 'https://api.football-data.org/v4',

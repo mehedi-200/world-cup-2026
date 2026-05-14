@@ -1,56 +1,108 @@
-import { useEffect, useState } from 'react';
-import { speakBangla, stopSpeaking } from '../utils/speakBangla';
+import { useEffect, useState, useRef } from 'react';
+import { prepareVoice, stopSpeaking } from '../utils/speakBangla';
 import { generateShareImage, downloadImage } from '../utils/generateShareImage';
 import ShareCard from './ShareCard';
 
-export default function ResultScreen({ result, onReplay, onShare }) {
-  const [showConfetti, setShowConfetti] = useState(false);
+// Estimated typing speed when we can't get exact audio duration
+const FALLBACK_MS_PER_CHAR = 75;
+
+export default function ResultScreen({ result, onReplay }) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [typingDone, setTypingDone] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const cleanupRef = useRef(null);
+
+  const isSpecial = result.isSpecial;
+  const fullText = result.voiceText;
 
   useEffect(() => {
-    // Auto-play Bangla voice
-    speakBangla(result.voiceText);
+    setDisplayedText('');
+    setTypingDone(false);
+    setLoading(true);
 
-    // Show confetti for fireworks/confetti animation
-    if (result.animation === 'fireworks' || result.animation === 'confetti') {
-      setShowConfetti(true);
-    }
+    let cancelled = false;
+    let typingTimer = null;
 
-    return () => stopSpeaking();
-  }, [result]);
+    const init = async () => {
+      const voice = await prepareVoice(fullText);
+      if (cancelled) { voice.stop(); return; }
 
-  const getAnimationClass = () => {
-    switch (result.animation) {
-      case 'shake':
-        return 'animate-screen-shake';
-      case 'glow':
-        return 'glow-gold';
-      default:
-        return '';
-    }
-  };
+      setLoading(false);
 
-  const handleShare = async () => {
-    const shareData = {
-      title: 'Human Calculatore Result',
-      text: result.shareText,
+      if (voice.engine === 'openai' && voice.audio) {
+        // ─── OPENAI: audio timeupdate drives the text (perfect sync) ───
+        const audio = voice.audio;
+
+        const onTimeUpdate = () => {
+          if (cancelled) return;
+          const progress = audio.currentTime / audio.duration;
+          const chars = Math.min(fullText.length, Math.ceil(progress * fullText.length));
+          setDisplayedText(fullText.slice(0, chars));
+        };
+
+        const onEnded = () => {
+          if (cancelled) return;
+          setDisplayedText(fullText);
+          setTypingDone(true);
+        };
+
+        audio.addEventListener('timeupdate', onTimeUpdate);
+        audio.addEventListener('ended', onEnded);
+        audio.play().catch(() => {});
+
+        cleanupRef.current = () => {
+          audio.removeEventListener('timeupdate', onTimeUpdate);
+          audio.removeEventListener('ended', onEnded);
+          voice.stop();
+        };
+      } else {
+        // ─── GOOGLE/BROWSER: estimated typing speed synced with voice ───
+        let i = 0;
+        voice.play();
+
+        typingTimer = setInterval(() => {
+          if (cancelled) return;
+          if (i < fullText.length) {
+            i++;
+            setDisplayedText(fullText.slice(0, i));
+          } else {
+            clearInterval(typingTimer);
+            setTypingDone(true);
+          }
+        }, FALLBACK_MS_PER_CHAR);
+
+        cleanupRef.current = () => {
+          clearInterval(typingTimer);
+          voice.stop();
+        };
+      }
     };
 
+    init();
+
+    return () => {
+      cancelled = true;
+      if (typingTimer) clearInterval(typingTimer);
+      if (cleanupRef.current) cleanupRef.current();
+      stopSpeaking();
+    };
+  }, [fullText]);
+
+  const handleShare = async () => {
+    const shareData = { title: 'Human Calculator AI', text: result.shareText };
     try {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(result.shareText);
-        alert('Result copied to clipboard!');
+        alert('Copied to clipboard!');
       }
     } catch {
-      // User cancelled or error
       try {
         await navigator.clipboard.writeText(result.shareText);
-        alert('Result copied to clipboard!');
-      } catch {
-        // Clipboard also failed
-      }
+        alert('Copied to clipboard!');
+      } catch {}
     }
   };
 
@@ -58,9 +110,7 @@ export default function ResultScreen({ result, onReplay, onShare }) {
     setIsDownloading(true);
     try {
       const dataUrl = await generateShareImage('share-card');
-      if (dataUrl) {
-        downloadImage(dataUrl);
-      }
+      if (dataUrl) downloadImage(dataUrl);
     } catch (err) {
       console.error('Failed to generate image:', err);
     } finally {
@@ -68,125 +118,114 @@ export default function ResultScreen({ result, onReplay, onShare }) {
     }
   };
 
+  // ─── Brief loading while audio prepares ───
+  if (loading) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <div className="w-8 h-8 border-2 border-fifa-gold border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-gray-500">Preparing cinematic verdict…</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── SPECIAL CASE: Happy + Married ───
+  if (isSpecial) {
+    return (
+      <div className="relative min-h-[80vh] flex items-center justify-center px-4 py-8">
+        <div className="relative z-20 max-w-lg w-full mx-auto text-center animate-screen-shake">
+          <div className="absolute inset-0 rounded-3xl bg-red-500/5 animate-glitch pointer-events-none" />
+
+          <div className="bg-white/[0.03] backdrop-blur-xl border border-red-500/30 rounded-3xl p-6 md:p-8 glow-red">
+            <div className="text-7xl mb-4 animate-scale-in">💔</div>
+
+            <h2 className="text-2xl md:text-3xl font-black text-red-400 mb-2 animate-trophy-enter">
+              {result.title}
+            </h2>
+            <p className="text-sm text-red-500/70 font-semibold uppercase tracking-wider mb-6">
+              {result.subtitle}
+            </p>
+
+            {/* Synced typing text */}
+            <div className="min-h-[80px] mb-6">
+              <p className="text-base md:text-lg text-red-200/90 leading-relaxed text-left">
+                {displayedText}
+                {!typingDone && (
+                  <span className="inline-block w-0.5 h-5 bg-red-400 ml-0.5 animate-blink-cursor align-middle" />
+                )}
+              </p>
+            </div>
+
+            {typingDone && (
+              <div className="space-y-2.5 animate-fade-in">
+                <button
+                  onClick={onReplay}
+                  className="w-full py-3.5 rounded-2xl text-base font-bold bg-gradient-to-r from-red-500 to-red-600 text-white shadow-[0_4px_20px_rgba(239,68,68,0.3)] active:scale-[0.97] transition-all duration-200"
+                >
+                  🔄 আবার চেষ্টা কর
+                </button>
+                <div className="flex gap-2.5">
+                  <button onClick={handleShare} className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] transition-all duration-200">
+                    📤 শেয়ার
+                  </button>
+                  <button onClick={handleDownload} disabled={isDownloading} className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] disabled:opacity-50 transition-all duration-200">
+                    {isDownloading ? '⏳...' : '📥 ডাউনলোড'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <ShareCard result={result} />
+      </div>
+    );
+  }
+
+  // ─── NORMAL CASE: Cinematic roast ───
   return (
     <div className="relative min-h-[80vh] flex items-center justify-center px-4 py-8">
-      {/* Confetti overlay */}
-      {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-10">
-          {Array.from({ length: 30 }).map((_, i) => (
-            <span
-              key={i}
-              className="absolute animate-confetti"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `-${Math.random() * 20}%`,
-                animationDelay: `${(Math.random() * 2).toFixed(1)}s`,
-                animationDuration: `${(Math.random() * 2 + 2).toFixed(1)}s`,
-                fontSize: `${Math.random() * 12 + 8}px`,
-                color: ['#D4AF37', '#FFD700', '#8B1538', '#fff', '#60A5FA'][
-                  Math.floor(Math.random() * 5)
-                ],
-              }}
-            >
-              {['*', '+', '.', 'o', '*'][Math.floor(Math.random() * 5)]}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Main Result Card */}
-      <div
-        className={`relative z-20 max-w-lg w-full mx-auto text-center animate-slide-up ${getAnimationClass()}`}
-      >
-        <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8">
-          {/* Status badge */}
-          <div className="mb-4">
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
-                result.status === 'legendary'
-                  ? 'bg-fifa-gold/20 text-fifa-gold'
-                  : result.status === 'rare'
-                    ? 'bg-purple-500/20 text-purple-400'
-                    : result.status === 'impossible'
-                      ? 'bg-red-500/20 text-red-400'
-                      : result.status === 'warning'
-                        ? 'bg-orange-500/20 text-orange-400'
-                        : 'bg-green-500/20 text-green-400'
-              }`}
-            >
-              {result.status}
-            </span>
-          </div>
-
-          {/* Title with scale animation */}
-          <h2 className="text-2xl md:text-3xl font-black text-white mb-3 animate-trophy-enter">
+      <div className="relative z-20 max-w-lg w-full mx-auto text-center animate-slide-up">
+        <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 glow-gold">
+          <h2 className="text-2xl md:text-3xl font-black text-white mb-1 animate-trophy-enter">
             {result.title}
           </h2>
+          <p className="text-sm text-gray-500 mb-6">{result.subtitle}</p>
 
-          {/* Subtitle in Bangla */}
-          <p className="text-base md:text-lg text-gray-300 mb-4 leading-relaxed">
-            {result.subtitle}
-          </p>
+          {/* Synced typing text */}
+          <div className="min-h-[100px] mb-6">
+            <p className="text-base md:text-lg text-gray-200 leading-relaxed text-left">
+              {displayedText}
+              {!typingDone && (
+                <span className="inline-block w-0.5 h-5 bg-fifa-gold ml-0.5 animate-blink-cursor align-middle" />
+              )}
+            </p>
+          </div>
 
-          {/* Achievement badge */}
-          {result.achievement && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fifa-gold/10 border border-fifa-gold/30 mb-4 animate-fade-in">
-              <span className="text-xl">{result.achievement.badge}</span>
-              <span className="text-fifa-gold font-semibold text-sm">
-                {result.achievement.label}
-              </span>
-              <span
-                className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
-                  result.achievement.rarity === 'legendary'
-                    ? 'bg-fifa-gold/20 text-fifa-gold'
-                    : result.achievement.rarity === 'epic'
-                      ? 'bg-purple-500/20 text-purple-400'
-                      : 'bg-blue-500/20 text-blue-400'
-                }`}
-              >
-                {result.achievement.rarity}
-              </span>
-            </div>
-          )}
-
-          {/* Funny line */}
-          <p className="text-sm text-gray-500 italic mt-4 mb-6">
-            "{result.funnyLine}"
-          </p>
-
-          {/* Name attribution */}
           <p className="text-xs text-gray-600 mb-6">
             Result for: <span className="text-fifa-gold">{result.userName}</span>
           </p>
 
-          {/* Action buttons */}
-          <div className="space-y-2.5">
-            <button
-              onClick={onReplay}
-              className="w-full py-3.5 rounded-2xl text-base font-bold bg-gradient-to-r from-fifa-gold to-yellow-500 text-[#1a1a2e] shadow-[0_4px_20px_rgba(212,175,55,0.3)] active:scale-[0.97] transition-all duration-200"
-            >
-              🔄 আবার চেষ্টা করুন
-            </button>
-            <div className="flex gap-2.5">
+          {typingDone && (
+            <div className="space-y-2.5 animate-fade-in">
               <button
-                onClick={handleShare}
-                className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] active:bg-white/[0.1] transition-all duration-200"
+                onClick={onReplay}
+                className="w-full py-3.5 rounded-2xl text-base font-bold bg-gradient-to-r from-fifa-gold to-yellow-500 text-[#1a1a2e] shadow-[0_4px_20px_rgba(212,175,55,0.3)] active:scale-[0.97] transition-all duration-200"
               >
-                📤 শেয়ার
+                🔄 আবার চেষ্টা কর
               </button>
-              <button
-                onClick={handleDownload}
-                disabled={isDownloading}
-                className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] active:bg-white/[0.1] disabled:opacity-50 transition-all duration-200"
-              >
-                {isDownloading ? '⏳...' : '📥 ডাউনলোড'}
-              </button>
+              <div className="flex gap-2.5">
+                <button onClick={handleShare} className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] transition-all duration-200">
+                  📤 শেয়ার
+                </button>
+                <button onClick={handleDownload} disabled={isDownloading} className="flex-1 py-3 rounded-2xl text-sm font-semibold bg-white/[0.06] border border-white/[0.08] text-white active:scale-[0.97] disabled:opacity-50 transition-all duration-200">
+                  {isDownloading ? '⏳...' : '📥 ডাউনলোড'}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
-
-      {/* Hidden ShareCard for html2canvas */}
       <ShareCard result={result} />
     </div>
   );

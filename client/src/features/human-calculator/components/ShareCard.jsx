@@ -9,7 +9,9 @@ export default function ShareCard({ result }) {
         style={{
           width: 600,
           height: 600,
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%)',
+          background: result.isSpecial
+            ? 'linear-gradient(135deg, #2d1010 0%, #1a1a2e 50%, #2d1010 100%)'
+            : 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -28,14 +30,16 @@ export default function ShareCard({ result }) {
             left: 0,
             right: 0,
             height: 4,
-            background: 'linear-gradient(90deg, #D4AF37, #FFD700, #D4AF37)',
+            background: result.isSpecial
+              ? 'linear-gradient(90deg, #ef4444, #dc2626, #ef4444)'
+              : 'linear-gradient(90deg, #D4AF37, #FFD700, #D4AF37)',
           }}
         />
 
         {/* Branding */}
         <p
           style={{
-            color: '#D4AF37',
+            color: result.isSpecial ? '#ef4444' : '#D4AF37',
             fontSize: 16,
             fontWeight: 700,
             letterSpacing: 3,
@@ -43,7 +47,7 @@ export default function ShareCard({ result }) {
             marginBottom: 8,
           }}
         >
-          Human Calculatore
+          Human Calculator AI
         </p>
 
         {/* User name */}
@@ -51,15 +55,10 @@ export default function ShareCard({ result }) {
           {result.userName}
         </p>
 
-        {/* Large emoji / title */}
-        <p style={{ fontSize: 64, marginBottom: 16, lineHeight: 1 }}>
-          {result.title.split(' ')[0]}
-        </p>
-
         {/* Title */}
         <h2
           style={{
-            color: '#fff',
+            color: result.isSpecial ? '#fca5a5' : '#fff',
             fontSize: 28,
             fontWeight: 900,
             textAlign: 'center',
@@ -83,35 +82,17 @@ export default function ShareCard({ result }) {
           {result.subtitle}
         </p>
 
-        {/* Badge */}
-        {result.achievement && (
-          <div
-            style={{
-              background: 'rgba(212,175,55,0.15)',
-              border: '1px solid rgba(212,175,55,0.3)',
-              borderRadius: 20,
-              padding: '6px 16px',
-              color: '#D4AF37',
-              fontSize: 14,
-              fontWeight: 600,
-              marginBottom: 20,
-            }}
-          >
-            {result.achievement.badge} {result.achievement.label}
-          </div>
-        )}
-
-        {/* Funny line */}
+        {/* Roast text */}
         <p
           style={{
-            color: '#888',
-            fontSize: 12,
-            fontStyle: 'italic',
+            color: result.isSpecial ? '#fecaca' : '#e5e7eb',
+            fontSize: 14,
             textAlign: 'center',
-            maxWidth: 400,
+            maxWidth: 480,
+            lineHeight: 1.6,
           }}
         >
-          {result.funnyLine}
+          {result.voiceText}
         </p>
 
         {/* Bottom decoration */}
@@ -122,7 +103,9 @@ export default function ShareCard({ result }) {
             left: 0,
             right: 0,
             height: 4,
-            background: 'linear-gradient(90deg, #D4AF37, #FFD700, #D4AF37)',
+            background: result.isSpecial
+              ? 'linear-gradient(90deg, #ef4444, #dc2626, #ef4444)'
+              : 'linear-gradient(90deg, #D4AF37, #FFD700, #D4AF37)',
           }}
         />
       </div>
